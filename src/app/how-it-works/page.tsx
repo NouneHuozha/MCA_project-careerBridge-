@@ -1,4 +1,3 @@
-import { images } from "@/lib/images";
 import Image from "next/image";
 import { BulletList, ButtonLink, Callout, Card, SectionHeading } from "@/components/ui";
 
@@ -50,9 +49,15 @@ export default function HowItWorksPage() {
               </ButtonLink>
             </div>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-ink-100">
-            <Image src={images.nagalandHills} alt="" width={900} height={600} className="h-60 w-full object-cover" />
-          </div>
+ <div className="relative h-60 overflow-hidden rounded-2xl border border-ink-100 lg:h-62">
+  <Image
+    src="/images/nagaland-hills.jpg"
+    alt=""
+    fill
+    className="object-cover"
+    sizes="(min-width: 1024px) 45vw, 100vw"
+  />
+</div>
         </div>
       </section>
 

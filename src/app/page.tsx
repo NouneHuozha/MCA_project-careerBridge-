@@ -6,7 +6,6 @@ import { Reveal } from "@/components/reveal";
 import { ArrowDoodle, CurveLine, Ridge } from "@/components/decor";
 import { GuidanceCompass } from "@/components/guidance-compass";
 import { FieldIcon, fieldVisual } from "@/components/field-visuals";
-import { images } from "@/lib/images";
 import { getFields } from "@/services/catalog";
 
 export const dynamic = "force-dynamic";
@@ -40,7 +39,7 @@ export default async function HomePage() {
           <div aria-hidden className="absolute bottom-0 right-[3%] h-36 w-36 rounded-full bg-butter/70" />
           <CurveLine className="pointer-events-none absolute -bottom-6 -right-4 h-28 w-36 text-forest-400" />
           <div className="animate-fade relative mx-auto aspect-[1.22] w-[84%] overflow-hidden rounded-[1.75rem] border-4 border-white shadow-[0_18px_45px_-30px_#19382f50] sm:aspect-[1.27]">
-            <Image src={images.heroStudent} alt="" fill priority placeholder="blur" sizes="(max-width: 1024px) 85vw, 43vw" className="object-cover" />
+            <Image src="/images/hero-student.png" alt="" fill priority sizes="(max-width: 1024px) 85vw, 43vw" className="object-cover" />
           </div>
           {pills.map((pill, i) => <Link href={pill.href} key={pill.title} className={`cb-pill group absolute z-10 flex items-center gap-2.5 px-2.5 py-2.5 transition-transform hover:-translate-y-1 ${pill.cls}`}>
             <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${accentSurface[pill.accent]}`}><pill.icon aria-hidden className="h-[18px] w-[18px]" strokeWidth={1.8} /></span>
@@ -68,7 +67,7 @@ export default async function HomePage() {
     </section>
     <section className="cb-container pb-16"><div className="grid overflow-hidden rounded-[1.5rem] border border-forest-200 bg-mint/35 lg:grid-cols-[minmax(0,1fr)_minmax(0,.8fr)]">
       <div className="p-7 sm:p-10 xl:p-14"><Eyebrow>Not sure where to begin?</Eyebrow><h2 className="mt-4 max-w-[26ch] text-2xl font-semibold sm:text-3xl">“I don’t know what to do after Class 10 or 12.”</h2><p className="mt-4 max-w-md text-base text-ink-500">That’s okay. Let’s understand what interests you first.</p><div className="mt-7 flex flex-wrap gap-3"><ButtonLink href="/start">Let’s get started<ArrowRight aria-hidden className="h-4 w-4" /></ButtonLink><ButtonLink href="/mentor" variant="secondary">Talk to the mentor</ButtonLink></div></div>
-      <div className="relative min-h-60"><Image src={images.studentsCampus} alt="" fill placeholder="blur" sizes="(max-width: 1024px) 92vw, 44vw" className="object-cover" /></div>
+      <div className="relative min-h-60"><Image src="/images/students-campus.jpg" alt="" fill sizes="(max-width: 1024px) 92vw, 44vw" className="object-cover" /></div>
     </div></section>
   </>;
 }
