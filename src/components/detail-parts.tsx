@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Compass, MessageCircle, Route } from "lucide-react";
+import { ArrowRight, Check, Compass, MessageCircle, Route } from "lucide-react";
 import type { ReactNode } from "react";
 import { ButtonLink, Eyebrow, IconTile, type Accent } from "@/components/ui";
 
@@ -39,6 +39,21 @@ export function MiniJourney({ current = 0 }: { current?: number }) {
   return <ol aria-label="Your exploration journey" className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
     {["Explore a field", "Find a pathway", "Check courses & colleges"].map((label, i) => <li key={label} className={`flex items-center gap-2 ${i === current ? "font-semibold text-forest-800" : "text-ink-500"}`} aria-current={i === current ? "step" : undefined}>
       <span className={`grid h-6 w-6 place-items-center rounded-full border ${i === current ? "border-forest-700 bg-forest-700 text-white" : "border-ink-200 bg-white"}`}>{i + 1}</span>{label}{i < 2 && <ArrowRight aria-hidden className="ml-1 h-3 w-3 text-ink-400" />}
+    </li>)}
+  </ol>;
+}
+
+export function JourneyStepper({ current = 0 }: { current?: number }) {
+  const steps = [
+    { label: "Your profile", detail: "Review your answers" },
+    { label: "Explore paths", detail: "See possible directions" },
+    { label: "Compare options", detail: "Look at routes side by side" },
+    { label: "Plan next steps", detail: "Save and act on a choice" },
+  ];
+  return <ol aria-label="Your CareerBridge journey" className="grid gap-3 sm:grid-cols-4">
+    {steps.map((step, index) => <li key={step.label} className={`relative flex items-center gap-3 rounded-xl border p-3 ${index === current ? "border-forest-300 bg-mint/70" : index < current ? "border-forest-100 bg-forest-50/50" : "border-ink-100 bg-white"}`} aria-current={index === current ? "step" : undefined}>
+      <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold ${index < current ? "bg-forest-100 text-forest-800" : index === current ? "bg-forest-700 text-white" : "bg-ink-50 text-ink-400"}`}>{index < current ? <Check aria-hidden className="h-4 w-4" /> : index + 1}</span>
+      <span className="min-w-0"><span className={`block text-xs font-bold ${index === current ? "text-forest-800" : "text-ink-700"}`}>{step.label}</span><span className="mt-0.5 block text-[11px] leading-snug text-ink-500">{step.detail}</span></span>
     </li>)}
   </ol>;
 }
