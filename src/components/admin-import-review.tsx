@@ -69,6 +69,9 @@ export function AdminImportReview({ batch, rows: initialRows }: { batch: Batch; 
   const selectedRows = rows.filter((row) => selected.has(row.id));
   const validRowIds = rows.filter((row) => !row.errors?.length && row.status !== "imported").map((row) => row.id);
   const errorRowIds = rows.filter((row) => Boolean(row.errors?.length) && row.status !== "imported").map((row) => row.id);
+  const hasPendingRows = rows.some((row) => row.status === "needs_review" || row.status === "rejected");
+  const batchFullyImported = batchStatus === "imported" && !hasPendingRows;
+  const displayBatchStatus = hasPendingRows ? "needs_review" : batchStatus;
 
   function toggleSelected(rowId: number) {
     setSelected((current) => {
@@ -142,9 +145,9 @@ export function AdminImportReview({ batch, rows: initialRows }: { batch: Batch; 
     setError(null);
     try {
       const response = await fetch(`/api/admin/imports/${batch.id}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "approve" }) });
-      const result = await response.json() as { error?: string; message?: string };
+      const result = await response.json() as { error?: string; message?: string; status?: string };
       if (!response.ok) throw new Error(result.error ?? "The batch could not be approved.");
-      setBatchStatus("imported");
+      setBatchStatus(result.status ?? "imported");
       setMessage(result.message ?? "Approved rows were imported.");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "The batch could not be approved.");
@@ -172,8 +175,8 @@ export function AdminImportReview({ batch, rows: initialRows }: { batch: Batch; 
 
       <Card className="mt-6 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-2"><Badge tone={batchStatus === "imported" ? "green" : "amber"}>{batchStatus}</Badge><span className="text-xs text-ink-500">Uploaded {formatDate(batch.createdAt)} by {batch.importedBy ?? "unknown admin"}</span></div>
-          <Button type="button" onClick={approveBatch} disabled={busyId !== null || batchStatus === "imported" || (counts.accepted ?? 0) === 0}>{busyId === "batch" ? "Importing…" : "Approve accepted rows"}</Button>
+          <div className="flex flex-wrap items-center gap-2"><Badge tone={displayBatchStatus === "imported" ? "green" : "amber"}>{displayBatchStatus}</Badge><span className="text-xs text-ink-500">Uploaded {formatDate(batch.createdAt)} by {batch.importedBy ?? "unknown admin"}</span></div>
+          <Button type="button" onClick={approveBatch} disabled={busyId !== null || batchFullyImported || (counts.accepted ?? 0) === 0}>{busyId === "batch" ? "Importing…" : "Approve accepted rows"}</Button>
         </div>
         <p className="mt-3 text-xs leading-relaxed text-ink-500">Approval runs in one database transaction. Rows still marked needs review or rejected are not imported.</p>
       </Card>
@@ -185,13 +188,13 @@ export function AdminImportReview({ batch, rows: initialRows }: { batch: Batch; 
             <label className="grid gap-1.5 text-xs font-semibold text-ink-700">Filter status<select value={statusFilter} onChange={(event) => { setStatusFilter(event.target.value); setPage(1); }} className="min-h-10 rounded-xl border border-ink-200 bg-white px-3 text-sm font-normal text-ink-700"><option value="all">All statuses</option><option value="needs_review">Needs review</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option><option value="imported">Imported</option></select></label>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="secondary" size="sm" disabled={busyId !== null || batchStatus === "imported" || !validRowIds.length} onClick={() => updateMany(validRowIds, "accepted")}>Accept all valid ({validRowIds.length})</Button>
-            <Button type="button" variant="ghost" size="sm" disabled={busyId !== null || batchStatus === "imported" || !errorRowIds.length} onClick={() => updateMany(errorRowIds, "rejected")}>Reject errors ({errorRowIds.length})</Button>
+            <Button type="button" variant="secondary" size="sm" disabled={busyId !== null || batchFullyImported || !validRowIds.length} onClick={() => updateMany(validRowIds, "accepted")}>Accept all valid ({validRowIds.length})</Button>
+            <Button type="button" variant="ghost" size="sm" disabled={busyId !== null || batchFullyImported || !errorRowIds.length} onClick={() => updateMany(errorRowIds, "rejected")}>Reject errors ({errorRowIds.length})</Button>
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-ink-100 pt-4">
           <label className="flex items-center gap-2 text-xs text-ink-600"><input type="checkbox" checked={pageRowIds.length > 0 && selectedOnPage.length === pageRowIds.length} onChange={togglePageSelection} />Select visible rows</label>
-          <div className="flex flex-wrap items-center gap-2"><span className="text-xs text-ink-500">{filteredRows.length} matching · {selected.size} selected</span><Button type="button" variant="secondary" size="sm" disabled={busyId !== null || batchStatus === "imported" || !selectedRows.length} onClick={() => updateMany([...selected], "accepted")}>Accept selected</Button><Button type="button" variant="ghost" size="sm" disabled={busyId !== null || batchStatus === "imported" || !selectedRows.length} onClick={() => updateMany([...selected], "rejected")}>Reject selected</Button></div>
+          <div className="flex flex-wrap items-center gap-2"><span className="text-xs text-ink-500">{filteredRows.length} matching · {selected.size} selected</span><Button type="button" variant="secondary" size="sm" disabled={busyId !== null || batchFullyImported || !selectedRows.length} onClick={() => updateMany([...selected], "accepted")}>Accept selected</Button><Button type="button" variant="ghost" size="sm" disabled={busyId !== null || batchFullyImported || !selectedRows.length} onClick={() => updateMany([...selected], "rejected")}>Reject selected</Button></div>
         </div>
       </Card>
 
@@ -203,12 +206,12 @@ export function AdminImportReview({ batch, rows: initialRows }: { batch: Batch; 
           <Card key={row.id} className="p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="flex items-start gap-3"><input type="checkbox" checked={selected.has(row.id)} onChange={() => toggleSelected(row.id)} aria-label={`Select row ${row.rowNumber}`} className="mt-1.5" /><div><p className="text-sm font-semibold text-ink-900">Row {row.rowNumber} <span className="font-normal text-ink-500">· {row.sheetName ?? "worksheet"}</span></p><div className="mt-2"><Badge tone={row.status === "accepted" ? "green" : row.status === "rejected" ? "red" : "amber"}>{row.status.replace("_", " ")}</Badge></div></div></div>
-              <div className="flex flex-wrap gap-2"><Button type="button" variant="secondary" size="sm" disabled={busyId !== null || batchStatus === "imported"} onClick={() => updateRow(row, "accepted")}>Accept</Button><Button type="button" variant="ghost" size="sm" disabled={busyId !== null || batchStatus === "imported"} onClick={() => updateRow(row, "rejected")}>Reject</Button></div>
+              <div className="flex flex-wrap gap-2"><Button type="button" variant="secondary" size="sm" disabled={busyId !== null || row.status === "imported"} onClick={() => updateRow(row, "accepted")}>Accept</Button><Button type="button" variant="ghost" size="sm" disabled={busyId !== null || row.status === "imported"} onClick={() => updateRow(row, "rejected")}>Reject</Button></div>
             </div>
             {(row.warnings?.length || row.errors?.length) ? <div className="mt-4 grid gap-2 sm:grid-cols-2">{row.warnings?.map((item) => <p key={item} className="rounded-lg bg-butter/40 px-3 py-2 text-xs text-butter-ink">Warning: {item}</p>)}{row.errors?.map((item) => <p key={item} className="rounded-lg bg-peach/40 px-3 py-2 text-xs text-peach-ink">Error: {item}</p>)}</div> : null}
             <div className="mt-4 grid gap-4 lg:grid-cols-2">
               <details className="rounded-xl border border-ink-100 bg-ink-50 p-3"><summary className="cursor-pointer text-xs font-semibold text-ink-700">Original workbook values</summary><pre className="mt-3 max-h-72 overflow-auto whitespace-pre-wrap break-words text-[11px] leading-relaxed text-ink-600">{jsonFor(row.rawData)}</pre></details>
-              <label className="grid gap-2 text-xs font-semibold text-ink-700">Normalized values — edit before accepting<textarea value={drafts[row.id] ?? "{}"} onChange={(event) => setDrafts((current) => ({ ...current, [row.id]: event.target.value }))} disabled={busyId !== null || batchStatus === "imported"} className="min-h-72 w-full rounded-xl border border-ink-200 bg-white p-3 font-mono text-[11px] font-normal leading-relaxed text-ink-700" /></label>
+              <label className="grid gap-2 text-xs font-semibold text-ink-700">Normalized values — edit before accepting<textarea value={drafts[row.id] ?? "{}"} onChange={(event) => setDrafts((current) => ({ ...current, [row.id]: event.target.value }))} disabled={busyId !== null || row.status === "imported"} className="min-h-72 w-full rounded-xl border border-ink-200 bg-white p-3 font-mono text-[11px] font-normal leading-relaxed text-ink-700" /></label>
             </div>
           </Card>
         ))}

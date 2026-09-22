@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
 import { auditEvents, dataImportRows, dataImports, entranceExams, institutions, scholarships } from "@/db/schema";
 
@@ -30,7 +30,11 @@ export async function approveImport(importId: number, actor: string) {
     const batches = await transaction.select().from(dataImports).where(eq(dataImports.id, importId)).limit(1);
     const batch = batches[0];
     if (!batch) throw new Error("Import batch not found.");
-    if (batch.status === "imported") throw new Error("This import batch has already been imported.");
+    const pendingRows = await transaction
+      .select({ id: dataImportRows.id })
+      .from(dataImportRows)
+      .where(and(eq(dataImportRows.importId, importId), inArray(dataImportRows.status, ["needs_review", "rejected"])));
+    if (batch.status === "imported" && !pendingRows.length) throw new Error("This import batch has already been fully imported.");
     if (batch.status === "rejected") throw new Error("A rejected import batch cannot be approved.");
 
     const rows = await transaction
@@ -168,13 +172,19 @@ export async function approveImport(importId: number, actor: string) {
       throw new Error(`Unsupported dataset type: ${batch.datasetType}`);
     }
 
+    const remainingRows = await transaction
+      .select({ id: dataImportRows.id })
+      .from(dataImportRows)
+      .where(and(eq(dataImportRows.importId, importId), inArray(dataImportRows.status, ["needs_review", "rejected"])));
+    const nextStatus = remainingRows.length ? "needs_review" : "imported";
+
     await transaction
       .update(dataImportRows)
       .set({ status: "imported" })
       .where(and(eq(dataImportRows.importId, importId), eq(dataImportRows.status, "accepted")));
     await transaction
       .update(dataImports)
-      .set({ status: "imported", reviewedAt: new Date(), notes: `Imported ${rows.length} accepted rows.`, importedBy: actor })
+      .set({ status: nextStatus, reviewedAt: new Date(), notes: remainingRows.length ? `Imported ${rows.length} accepted rows; ${remainingRows.length} rows remain for review.` : `Imported ${rows.length} accepted rows.`, importedBy: actor })
       .where(eq(dataImports.id, importId));
     await transaction.insert(auditEvents).values({
       actor,
@@ -184,6 +194,6 @@ export async function approveImport(importId: number, actor: string) {
       metadata: { datasetType: batch.datasetType, acceptedRows: rows.length },
     });
 
-    return { importedRows: rows.length, datasetType: batch.datasetType };
+    return { importedRows: rows.length, remainingRows: remainingRows.length, status: nextStatus, datasetType: batch.datasetType };
   });
 }
