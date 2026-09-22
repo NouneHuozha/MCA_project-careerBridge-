@@ -16,6 +16,7 @@ export function CounsellingExperience({ initial, focusKey }: { initial: State; f
   const router = useRouter();
   const [state, setState] = useState(initial);
   const question = state.question;
+  const currentQuestionKey = question?.key;
   const initialAnswer = initial.question ? initial.answers?.[initial.question.key] : undefined;
   const initialOptions = initial.question?.options?.map((o) => o.value) ?? [];
   const [selected, setSelected] = useState<string[]>(initialAnswer?.values.filter((v) => initialOptions.includes(v) || v === "not-sure") ?? []);
@@ -32,12 +33,18 @@ export function CounsellingExperience({ initial, focusKey }: { initial: State; f
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
+  const composer = useRef<HTMLDivElement>(null);
   const confirmReset = useRef<HTMLDialogElement>(null);
   const busy = useRef(false);
   useEffect(() => {
     const node = scroller.current;
     if (node) node.scrollTo({ top: node.scrollHeight, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
   }, [turns.length]);
+  useEffect(() => {
+    if (!currentQuestionKey || turns.length < 2) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.requestAnimationFrame(() => composer.current?.scrollIntoView({ block: "start", behavior: reduced ? "auto" : "smooth" }));
+  }, [currentQuestionKey, turns.length]);
 
   async function submit(action: "answer" | "skip" | "reset" = "answer", unsure = false) {
     if (busy.current || (!question && action !== "reset")) return;
@@ -82,7 +89,7 @@ export function CounsellingExperience({ initial, focusKey }: { initial: State; f
         {turns.map((turn, i) => <div key={i} className={cx("flex", turn.role === "student" ? "justify-end" : "justify-start")}><p className={cx("max-w-[90%] rounded-2xl px-4 py-3 text-sm leading-relaxed sm:max-w-[80%]", turn.role === "student" ? "rounded-br-sm bg-forest-700 text-white" : "rounded-bl-sm border border-ink-200 bg-white text-ink-700")}><span className="sr-only">{turn.role === "student" ? "You: " : "Mentor: "}</span>{turn.text}</p></div>)}
         {pending && <p role="status" className="text-xs text-ink-500">Saving your answer…</p>}
       </div>
-      <div className="cb-counselling-composer cb-scroll p-4 sm:p-5">
+      <div ref={composer} className="cb-counselling-composer cb-scroll p-4 sm:p-5">
         {error && <div className="mb-3"><Callout tone="amber"><p role="alert">{error}</p></Callout></div>}
           {question ? <form onSubmit={(event) => { event.preventDefault(); void submit(); }}><fieldset disabled={pending}>
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2"><span className="text-[11px] font-bold uppercase tracking-[.14em] text-forest-700">{sectionLabel ?? "Your journey"}</span><span className="text-xs font-semibold text-ink-500">Question {questionNumber} of {total}</span></div>

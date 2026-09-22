@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { CheckSquare, ChevronRight, Compass, FileText, GraduationCap, LayoutDashboard, Menu, MessageCircle, X } from "lucide-react";
+import { CheckSquare, ChevronDown, ChevronRight, Compass, GraduationCap, LayoutDashboard, Menu, MessageCircle, X } from "lucide-react";
 import { cx } from "@/components/ui";
 
 type WorkspaceUser = { name: string | null };
@@ -81,12 +81,9 @@ function WorkspaceNavLink({ item, pathname, onNavigate }: { item: WorkspaceLink;
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
   return (
     <>
-      <div className="mb-6 rounded-2xl border border-forest-200 bg-gradient-to-br from-mint to-white p-4">
-        <p className="cb-eyebrow">Your journey</p>
-        <p className="mt-2 text-sm font-semibold text-ink-900">Start with yourself. Take one step at a time.</p>
-        <Link href="/start" onClick={onNavigate} className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-forest-700 underline underline-offset-4">
-          Begin or restart <ChevronRight aria-hidden className="h-3.5 w-3.5" />
-        </Link>
+      <div className="mb-4 flex items-center justify-between gap-3 rounded-xl bg-mint/60 px-3 py-2.5">
+        <span className="text-xs font-semibold text-forest-800">Start with yourself, one step at a time.</span>
+        <Link href="/start" onClick={onNavigate} className="shrink-0 text-[11px] font-bold text-forest-700 underline underline-offset-4">Restart</Link>
       </div>
 
       <nav aria-label="Student journey" className="space-y-1">
@@ -118,11 +115,13 @@ export function WorkspaceShell({ user, children }: { user: WorkspaceUser; childr
     <div className="cb-workspace-layout">
       <aside className="cb-workspace-sidebar hidden lg:block" aria-label="Student workspace navigation">
         <div className="sticky top-[92px]">
-          <div className="mb-5 border-b border-ink-200 pb-4">
-            <p className="text-xs font-semibold text-ink-500">Welcome back{user.name ? `, ${user.name.split(" ")[0]}` : ""}</p>
-            <p className="mt-1 text-lg font-semibold text-ink-900">Your space, your pace.</p>
-          </div>
-          <SidebarContent pathname={pathname} />
+          <details open className="group rounded-2xl border border-ink-200 bg-white shadow-sm">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+              <span><span className="block text-xs font-semibold text-ink-500">Welcome back{user.name ? `, ${user.name.split(" ")[0]}` : ""}</span><span className="mt-1 block text-base font-semibold text-ink-900">{activeWorkspace?.label ?? "Your journey"}</span></span>
+              <span aria-hidden className="grid h-8 w-8 place-items-center rounded-full border border-ink-200 bg-ink-50 text-forest-700"><ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" /></span>
+            </summary>
+            <div className="border-t border-ink-200 p-3"><SidebarContent pathname={pathname} /></div>
+          </details>
         </div>
       </aside>
 
