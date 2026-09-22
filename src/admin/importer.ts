@@ -137,7 +137,7 @@ export function parseWorkbook(buffer: Buffer, datasetType: ImportDataset): Impor
   const headers = (matrix[headerRow] ?? []).map(displayHeader);
   const headerKeys = headers.map(headerKey);
   const missingHeaders = REQUIRED_HEADERS[datasetType].filter((header) => !headerKeys.includes(headerKey(header)));
-  if (missingHeaders.length) workbookWarnings.push(`Missing expected columns: ${missingHeaders.join(", ")}.`);
+  if (missingHeaders.length) throw new Error(`The workbook does not match the selected “${datasetType}” dataset type. Missing required columns: ${missingHeaders.join(", ")}. Choose the correct dataset type and upload again.`);
 
   const rows = matrix
     .slice(headerRow + 1)

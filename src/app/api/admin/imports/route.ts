@@ -140,6 +140,8 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("[careerbridge] admin import failed", error);
-    return NextResponse.json({ error: "We couldn't stage that workbook. Check the database and workbook format, then try again." }, { status: 503 });
+    const message = error instanceof Error ? error.message : "We couldn't stage that workbook. Check the database and workbook format, then try again.";
+    const isValidationError = message.startsWith("The workbook does not match the selected");
+    return NextResponse.json({ error: isValidationError ? message : "We couldn't stage that workbook. Check the database and workbook format, then try again." }, { status: isValidationError ? 400 : 503 });
   }
 }
