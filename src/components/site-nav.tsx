@@ -19,6 +19,7 @@ const exploreMenu = [
 ];
 const publicLinks = [{ href: "/how-it-works", label: "How it works", icon: BookOpen }, { href: "/institutions", label: "Institutions", icon: Building2 }, { href: "/about", label: "About", icon: Info }];
 const authedLinks = [{ href: "/institutions", label: "Institutions", icon: Building2 }, { href: "/saved", label: "Saved", icon: Bookmark }, { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard }, { href: "/mentor", label: "Mentor", icon: MessageCircle }];
+const workspaceRoutes = ["/dashboard", "/profile", "/saved", "/action-plan", "/mentor", "/compare", "/counselling"];
 
 export function SiteNav({ user }: { user: NavUser }) {
   const pathname = usePathname();
@@ -35,6 +36,17 @@ export function SiteNav({ user }: { user: NavUser }) {
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
   const closeAll = () => { setMobileOpen(false); setExploreOpen(false); };
   const navLinks = user ? authedLinks : publicLinks;
+  const inWorkspace = Boolean(user && workspaceRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`)));
+  if (inWorkspace) return <header className="sticky top-0 z-50 border-b border-ink-200 bg-canvas shadow-[0_2px_8px_#23453305]">
+    <div className="cb-container flex h-[76px] items-center justify-between gap-5">
+      <Logo />
+      <div className="flex items-center gap-2 sm:gap-3">
+        <Link href="/mentor" className="cb-button cb-button-secondary px-3 py-2 text-sm"><MessageCircle aria-hidden className="h-4 w-4" /><span className="hidden sm:inline">Ask the Mentor</span></Link>
+        <Link href="/profile" className="cb-button border border-forest-200 bg-mint/60 px-3 py-2 text-sm text-forest-800"><User aria-hidden className="h-4 w-4" /><span className="max-w-24 truncate">{user?.name?.split(" ")[0] ?? "My profile"}</span></Link>
+        <SignOutButton className="hidden sm:inline-flex" />
+      </div>
+    </div>
+  </header>;
   return <header className="sticky top-0 z-50 border-b border-ink-200 bg-canvas shadow-[0_2px_8px_#23453305]">
     <div className="cb-container flex h-[76px] items-center justify-between gap-5">
       <div className="flex min-w-0 items-center gap-6 2xl:gap-12">

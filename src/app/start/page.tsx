@@ -12,7 +12,7 @@ const stageCards: { stage: Stage; label: string; description: string; opens: str
   {
     stage: "class10",
     label: "Class 10",
-    description: "I'm in Class 10 / completed Class 10",
+    description: "I’m in Class 10 or have just finished it",
     opens: ["Streams", "Polytechnic", "ITI trades"],
     icon: School,
     accent: "bg-mint text-mint-ink",
@@ -20,7 +20,7 @@ const stageCards: { stage: Stage; label: string; description: string; opens: str
   {
     stage: "class12",
     label: "Class 12",
-    description: "I'm in Class 12 / completed Class 12",
+    description: "I’m in Class 12 or have just finished it",
     opens: ["Degrees", "Entrance exams", "Admissions"],
     icon: GraduationCap,
     accent: "bg-lavender text-lavender-ink",
@@ -47,17 +47,21 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
 
       <div className="cb-container relative max-w-3xl py-14 lg:py-20">
         <div className="animate-rise flex items-center gap-3">
-          <Eyebrow>Step 1 of 3</Eyebrow>
+          <Eyebrow>Start with yourself</Eyebrow>
           <span aria-hidden className="h-px flex-1 bg-ink-200" />
           <Sparkle className="h-4 w-4 text-butter-ink/50" />
         </div>
 
         <h1 className="animate-rise delay-1 mt-5 text-[clamp(2rem,4.5vw,2.8rem)] font-semibold">
-          Where are you in your journey?
+          Let’s start with where you are.
         </h1>
         <p className="animate-rise delay-2 mt-4 max-w-lg text-[16px] leading-relaxed text-ink-500">
-          This shapes what we ask next. You can change it any time.
+          Tell us whether you’re exploring what comes after Class 10 or Class 12. We’ll ask a few short questions and help you find options worth exploring.
         </p>
+
+        <div className="animate-rise delay-2 mt-7 grid max-w-xl grid-cols-3 gap-2 text-center text-xs sm:gap-3">
+          {["Understand yourself", "Explore possibilities", "Take a next step"].map((label, index) => <div key={label} className={`rounded-xl border px-2 py-3 ${index === 0 ? "border-forest-300 bg-mint text-forest-800" : "border-ink-200 bg-white text-ink-500"}`}><span className="mx-auto mb-1 grid h-6 w-6 place-items-center rounded-full bg-white/80 text-[11px] font-bold text-forest-700">{index + 1}</span>{label}</div>)}
+        </div>
 
         <form action={begin} className="mt-10 space-y-8">
           <fieldset className="animate-rise delay-3">
@@ -99,7 +103,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
           </fieldset>
 
           <fieldset className="animate-rise delay-4">
-            <legend className="mb-3 text-sm font-medium text-ink-700">Which describes you best?</legend>
+            <legend className="mb-3 text-sm font-medium text-ink-700">Which describes you best right now?</legend>
             <div className="flex flex-wrap gap-2">
               {[
                 { value: "studying", label: "Still studying" },
@@ -123,7 +127,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
               <ArrowGlyph />
             </Button>
             <p className="text-[13px] text-ink-400">
-              {count} short questions · about 2 minutes · we never ask for your address
+              {count} short questions · about 2 minutes · you can change your answers later
             </p>
           </div>
         </form>

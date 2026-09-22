@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { PageBack } from "@/components/page-back";
 import { SavedProvider } from "@/components/save-button";
 import { MentorWidget } from "@/components/mentor-widget";
+import { WorkspaceShell } from "@/components/workspace-shell";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
@@ -33,7 +34,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           <SiteNav user={user ? { name: user.name, email: user.email } : null} />
           <main id="main" className="min-w-0 flex-1">
             <PageBack />
-            {children}
+            <WorkspaceShell user={{ name: user?.name ?? null }}>{children}</WorkspaceShell>
           </main>
           <SiteFooter />
           <MentorWidget />

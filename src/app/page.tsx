@@ -10,10 +10,9 @@ import { getFields } from "@/services/catalog";
 
 export const dynamic = "force-dynamic";
 const pills = [
-  { href: "/explore", title: "Explore", sub: "career possibilities", icon: Compass, accent: "mint" as const, cls: "left-0 top-[12%]" },
-  { href: "/institutions", title: "Discover", sub: "colleges in Nagaland", icon: MapPin, accent: "lavender" as const, cls: "right-0 top-[32%]" },
-  { href: "/courses", title: "Find your way", sub: "courses & pathways", icon: GraduationCap, accent: "butter" as const, cls: "left-0 top-[54%]" },
-  { href: "/action-plan", title: "Take a step", sub: "make a simple plan", icon: Route, accent: "peach" as const, cls: "right-0 bottom-[9%]" },
+  { href: "/explore", title: "Explore", sub: "career possibilities", icon: Compass, accent: "mint" as const, cls: "left-0 top-[16%]" },
+  { href: "/institutions", title: "Find a college", sub: "in Nagaland", icon: MapPin, accent: "lavender" as const, cls: "right-0 top-[38%]" },
+  { href: "/courses", title: "See courses", sub: "degrees & diplomas", icon: GraduationCap, accent: "butter" as const, cls: "left-0 top-[61%]" },
 ];
 const pillars = [
   { href: "/start", icon: Compass, accent: "mint" as const, title: "Understand yourself", text: "A short conversation about what makes you, you.", cta: "Get started" },
@@ -30,8 +29,8 @@ export default async function HomePage() {
         <div className="min-w-0">
           <Eyebrow className="animate-rise">Career & education guidance · Nagaland</Eyebrow>
           <h1 className="animate-rise delay-1 mt-5 max-w-[13.8ch] text-[clamp(2.5rem,4.1vw,5.1rem)] font-semibold leading-[1.08] tracking-[-.045em]">Your path is yours.<br /><span className="text-forest-700">We help you</span> understand it.</h1>
-          <p className="animate-rise delay-2 mt-6 max-w-[48ch] text-base leading-relaxed text-ink-500 lg:text-lg">Explore careers, education pathways, courses and opportunities with guidance designed for students in Nagaland.</p>
-          <div className="animate-rise delay-3 mt-8 flex flex-wrap gap-3"><ButtonLink href="/start" size="lg">Start exploring<ArrowRight aria-hidden className="h-5 w-5" /></ButtonLink><ButtonLink href="/how-it-works" variant="secondary" size="lg"><Play aria-hidden className="h-4 w-4" />How it works</ButtonLink></div>
+          <p className="animate-rise delay-2 mt-6 max-w-[48ch] text-base leading-relaxed text-ink-500 lg:text-lg">Answer a few questions about yourself, then explore fields and routes worth considering. You stay in control of the decision.</p>
+          <div className="animate-rise delay-3 mt-8 flex flex-wrap gap-3"><ButtonLink href="/start" size="lg">Start with a few questions<ArrowRight aria-hidden className="h-5 w-5" /></ButtonLink><ButtonLink href="/explore" variant="secondary" size="lg">Browse options</ButtonLink></div>
           <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 text-sm text-ink-500"><span className="flex items-center gap-2"><BookOpen aria-hidden className="h-4 w-4 text-forest-600" />For Class 10 & Class 12</span><span className="flex items-center gap-2"><MapPin aria-hidden className="h-4 w-4 text-forest-600" />Starting with Nagaland</span></div>
         </div>
         <div className="relative min-w-0 pb-6 pt-3">
@@ -46,18 +45,19 @@ export default async function HomePage() {
             <span className="pr-2"><span className="block text-xs font-bold text-ink-900 sm:text-sm">{pill.title}</span><span className="hidden text-xs text-ink-500 sm:block">{pill.sub}</span></span>
             <ArrowRight aria-hidden className={`hidden h-3.5 w-3.5 text-forest-600 ${i % 2 ? "sm:block" : "lg:block"}`} />
           </Link>)}
-          <div className="absolute bottom-0 left-[8%] flex items-center gap-1"><ArrowDoodle className="hidden h-12 w-10 text-forest-700 sm:block" /><span className="cb-pill bg-white px-4 py-3 text-xs text-ink-600 sm:text-sm"><strong className="text-ink-900">More options.</strong> Your decision.</span></div>
+          <div className="absolute bottom-0 left-[8%] flex items-center gap-1"><ArrowDoodle className="hidden h-12 w-10 text-forest-700 sm:block" /><span className="cb-pill bg-white px-4 py-3 text-xs text-ink-600 sm:text-sm"><strong className="text-ink-900">More than one route.</strong> Your decision.</span></div>
         </div>
       </div>
     </section>
     <section className="bg-white py-7">
-      <div className="cb-container grid gap-4 md:grid-cols-3">{pillars.map((pillar, i) => <Reveal key={pillar.title} delay={i * 80}><Link href={pillar.href} className="group flex h-full items-start gap-4 rounded-2xl border border-ink-200 p-5 transition-all hover:-translate-y-1 hover:border-forest-400 lg:p-6">
+      <div className="cb-container mb-4"><p className="cb-eyebrow">Already know what you want?</p><p className="mt-2 text-sm text-ink-500">You can browse without answering the questions.</p></div>
+      <div className="cb-container grid gap-4 md:grid-cols-3">{pillars.slice(1).map((pillar, i) => <Reveal key={pillar.title} delay={i * 80}><Link href={pillar.href} className="group flex h-full items-start gap-4 rounded-2xl border border-ink-200 p-5 transition-all hover:-translate-y-1 hover:border-forest-400 lg:p-6">
         <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl ${accentSurface[pillar.accent]}`}><pillar.icon aria-hidden className="h-5 w-5" /></span><span><span className="block text-base font-semibold text-ink-900">{pillar.title}</span><span className="mt-2 block text-sm leading-relaxed text-ink-500">{pillar.text}</span><span className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-forest-700">{pillar.cta}<ArrowRight aria-hidden className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span></span>
       </Link></Reveal>)}</div>
     </section>
     <section className="border-y border-ink-200 bg-canvas-deep">
       <div className="cb-container grid items-center gap-10 py-16 lg:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)] lg:gap-20">
-        <Reveal><Eyebrow>Guide, don’t decide</Eyebrow><h2 className="mt-4 max-w-[20ch] text-[clamp(1.8rem,3vw,3rem)] font-semibold">We don’t choose your career for you.</h2><p className="mt-5 max-w-md text-base leading-relaxed text-ink-500">CareerBridge helps you understand your options. You make the decision.</p><ButtonLink href="/start" className="mt-7">Begin with a conversation<ArrowRight aria-hidden className="h-4 w-4" /></ButtonLink></Reveal>
+        <Reveal><Eyebrow>Guide, don’t decide</Eyebrow><h2 className="mt-4 max-w-[20ch] text-[clamp(1.8rem,3vw,3rem)] font-semibold">We don’t choose your career for you.</h2><p className="mt-5 max-w-md text-base leading-relaxed text-ink-500">CareerBridge helps you understand your options. You make the decision.</p><ButtonLink href="/start" className="mt-7">Start with a few questions<ArrowRight aria-hidden className="h-4 w-4" /></ButtonLink></Reveal>
         <Reveal delay={100}><GuidanceCompass /></Reveal>
       </div>
     </section>
