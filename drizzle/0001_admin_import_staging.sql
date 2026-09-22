@@ -43,3 +43,9 @@ ALTER TABLE "entrance_exams"
   ALTER COLUMN "short_name" TYPE varchar(80),
   ALTER COLUMN "conducting_body" TYPE varchar(320),
   ALTER COLUMN "application_period" TYPE varchar(320);
+
+ALTER TABLE "scholarships"
+  ALTER COLUMN "name" TYPE varchar(240),
+  ALTER COLUMN "provider" TYPE varchar(240),
+  ALTER COLUMN "category" TYPE varchar(120),
+  ALTER COLUMN "deadline_note" TYPE text;
