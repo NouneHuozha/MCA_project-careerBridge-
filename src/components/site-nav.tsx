@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Award, Bookmark, Building2, ChevronDown, Compass, FileText, GraduationCap, LayoutDashboard, MessageCircle, Route, PencilRuler, User, Menu, X, ArrowRight, BookOpen, Info } from "lucide-react";
+import { Award, ChevronDown, Compass, FileText, GraduationCap, LayoutDashboard, MessageCircle, Route, PencilRuler, User, Menu, X, ArrowRight, BookOpen } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { SignOutButton } from "@/components/sign-out-button";
 import { ButtonLink, cx } from "@/components/ui";
@@ -17,9 +17,9 @@ const exploreMenu = [
   { href: "/scholarships", label: "Scholarships", detail: "Help with study costs", icon: Award, color: "bg-peach text-peach-ink" },
   { href: "/opportunities", label: "Skills & opportunities", detail: "Small steps to start now", icon: PencilRuler, color: "bg-mint text-mint-ink" },
 ];
-const publicLinks = [{ href: "/how-it-works", label: "How it works", icon: BookOpen }, { href: "/institutions", label: "Institutions", icon: Building2 }, { href: "/about", label: "About", icon: Info }];
-const authedLinks = [{ href: "/institutions", label: "Institutions", icon: Building2 }, { href: "/saved", label: "Saved", icon: Bookmark }, { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard }, { href: "/mentor", label: "Mentor", icon: MessageCircle }];
-const workspaceRoutes = ["/dashboard", "/profile", "/saved", "/action-plan", "/mentor", "/compare", "/counselling"];
+const publicLinks = [{ href: "/courses", label: "Find study options", icon: GraduationCap }, { href: "/how-it-works", label: "How it works", icon: BookOpen }];
+const authedLinks = [{ href: "/courses", label: "Find study options", icon: GraduationCap }, { href: "/dashboard", label: "My progress", icon: LayoutDashboard }];
+const workspaceRoutes = ["/dashboard", "/profile", "/saved", "/action-plan", "/mentor", "/compare", "/counselling", "/explore", "/careers", "/pathways", "/courses", "/institutions", "/exams", "/scholarships", "/opportunities"];
 
 export function SiteNav({ user }: { user: NavUser }) {
   const pathname = usePathname();
@@ -54,7 +54,7 @@ export function SiteNav({ user }: { user: NavUser }) {
         <nav aria-label="Main" className="hidden items-center gap-1 xl:flex 2xl:gap-2">
           <div ref={exploreRef} className="relative">
             <button ref={exploreButton} type="button" onClick={() => setExploreOpen((v) => !v)} aria-expanded={exploreOpen} aria-controls="explore-menu" className={cx("inline-flex min-h-11 items-center gap-2 rounded-xl border px-4 py-2 text-[15px] font-semibold transition-colors", exploreOpen || isActive("/explore") ? "border-forest-300 bg-mint text-forest-800" : "border-transparent text-ink-700 hover:border-forest-200 hover:bg-forest-50")}>
-              <Compass aria-hidden className="h-4 w-4" />Explore<ChevronDown aria-hidden className={cx("h-4 w-4 transition-transform", exploreOpen && "rotate-180")} />
+              <Compass aria-hidden className="h-4 w-4" />Explore paths<ChevronDown aria-hidden className={cx("h-4 w-4 transition-transform", exploreOpen && "rotate-180")} />
             </button>
             {exploreOpen && <div id="explore-menu" className="animate-rise absolute left-0 top-[calc(100%+1rem)] w-[32rem] rounded-2xl border border-forest-200 bg-white p-3 shadow-xl shadow-forest-900/10">
               <div className="grid grid-cols-2 gap-1">{exploreMenu.map((item) => <Link key={item.href} href={item.href} onClick={closeAll} className="flex items-start gap-3 rounded-xl p-3 hover:bg-forest-50">
