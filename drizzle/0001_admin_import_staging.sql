@@ -21,3 +21,9 @@ CREATE TABLE IF NOT EXISTS "data_import_rows" (
 );
 
 CREATE INDEX IF NOT EXISTS "data_import_rows_import_idx" ON "data_import_rows" USING btree ("import_id");
+
+ALTER TABLE "institutions"
+  ADD COLUMN IF NOT EXISTS "category" varchar(100),
+  ADD COLUMN IF NOT EXISTS "board" varchar(100),
+  ADD COLUMN IF NOT EXISTS "social_media_url" text,
+  ADD COLUMN IF NOT EXISTS "courses_offered" text;

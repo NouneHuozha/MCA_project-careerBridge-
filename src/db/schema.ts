@@ -388,6 +388,8 @@ export const institutions = pgTable(
     code: varchar("code", { length: 64 }).notNull(),
     name: varchar("name", { length: 200 }).notNull(),
     type: varchar("type", { length: 60 }).notNull(), // university | college | polytechnic | iti | school | training_centre
+    category: varchar("category", { length: 100 }),
+    board: varchar("board", { length: 100 }),
     ownership: varchar("ownership", { length: 40 }).notNull(), // government | private | autonomous | central
     country: varchar("country", { length: 60 }).notNull().default("India"),
     state: varchar("state", { length: 60 }).notNull().default("Nagaland"),
@@ -396,9 +398,11 @@ export const institutions = pgTable(
     latitude: doublePrecision("latitude"),
     longitude: doublePrecision("longitude"),
     officialWebsite: text("official_website"),
+    socialMediaUrl: text("social_media_url"),
     admissionPortal: text("admission_portal"),
     contactEmail: varchar("contact_email", { length: 160 }),
     contactPhone: varchar("contact_phone", { length: 60 }),
+    coursesOffered: text("courses_offered"),
     hostelAvailable: varchar("hostel_available", { length: 24 }).notNull().default("unknown"),
     studyLevels: jsonb("study_levels").$type<string[]>().default([]),
     fieldSlugs: jsonb("field_slugs").$type<string[]>().default([]),

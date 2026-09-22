@@ -43,8 +43,12 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
 
   try {
     const body = (await request.json()) as { action?: string };
-    if (body.action !== "approve") return NextResponse.json({ error: "Unsupported import action." }, { status: 400 });
-    const result = await approveImport(importId, user.email);
+    if (!["approve", "resync"].includes(body.action ?? "")) return NextResponse.json({ error: "Unsupported import action." }, { status: 400 });
+    if (body.action === "resync") {
+      const batches = await db.select({ datasetType: dataImports.datasetType }).from(dataImports).where(eq(dataImports.id, importId)).limit(1);
+      if (batches[0]?.datasetType !== "institutions") return NextResponse.json({ error: "Only institution imports support resync." }, { status: 400 });
+    }
+    const result = await approveImport(importId, user.email, { resync: body.action === "resync" });
     return NextResponse.json({ ...result, message: "Approved rows were imported into the canonical catalogue." });
   } catch (error) {
     const message = error instanceof Error ? error.message : "The import could not be approved.";

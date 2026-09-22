@@ -156,6 +156,22 @@ export function AdminImportReview({ batch, rows: initialRows }: { batch: Batch; 
     }
   }
 
+  async function resyncBatch() {
+    setBusyId("batch");
+    setMessage(null);
+    setError(null);
+    try {
+      const response = await fetch(`/api/admin/imports/${batch.id}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "resync" }) });
+      const result = await response.json() as { error?: string; message?: string };
+      if (!response.ok) throw new Error(result.error ?? "The institution data could not be resynced.");
+      setMessage("Institution records were resynced from the reviewed workbook.");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "The institution data could not be resynced.");
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   return (
     <div className="cb-container py-12">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -176,7 +192,7 @@ export function AdminImportReview({ batch, rows: initialRows }: { batch: Batch; 
       <Card className="mt-6 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2"><Badge tone={displayBatchStatus === "imported" ? "green" : "amber"}>{displayBatchStatus}</Badge><span className="text-xs text-ink-500">Uploaded {formatDate(batch.createdAt)} by {batch.importedBy ?? "unknown admin"}</span></div>
-          <Button type="button" onClick={approveBatch} disabled={busyId !== null || batchFullyImported || (counts.accepted ?? 0) === 0}>{busyId === "batch" ? "Importing…" : "Approve accepted rows"}</Button>
+          <div className="flex flex-wrap gap-2"><Button type="button" variant="secondary" onClick={resyncBatch} disabled={busyId !== null || !batchFullyImported || batch.datasetType !== "institutions"}>{busyId === "batch" ? "Working…" : "Resync institutions"}</Button><Button type="button" onClick={approveBatch} disabled={busyId !== null || batchFullyImported || (counts.accepted ?? 0) === 0}>{busyId === "batch" ? "Importing…" : "Approve accepted rows"}</Button></div>
         </div>
         <p className="mt-3 text-xs leading-relaxed text-ink-500">Approval runs in one database transaction. Rows still marked needs review or rejected are not imported.</p>
       </Card>

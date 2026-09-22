@@ -16,16 +16,24 @@ function listValue(data: RowData, key: string) {
     .filter(Boolean);
 }
 
-function stageValue(data: RowData, key: string) {
-  const value = textValue(data, key);
-  return value ? [value] : [];
+function stageValues(data: RowData, key: string) {
+  const value = textValue(data, key).toLowerCase();
+  if (!value) return [];
+  if (value === "both" || value.includes("10 and 12") || value.includes("10;12")) return ["after_class10", "after_class12"];
+  return value.split(/[;,]/).map((item) => item.trim()).filter(Boolean);
+}
+
+function contactParts(value: string) {
+  const email = value.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0] ?? null;
+  const phone = value.match(/(?:\+?91[\s-]?)?[6-9]\d{9}|(?:0\d{2,4}[\s-]?)?\d{6,8}/)?.[0]?.trim() ?? null;
+  return { email, phone };
 }
 
 function nullable(value: string) {
   return value || null;
 }
 
-export async function approveImport(importId: number, actor: string) {
+export async function approveImport(importId: number, actor: string, options: { resync?: boolean } = {}) {
   return db.transaction(async (transaction) => {
     const batches = await transaction.select().from(dataImports).where(eq(dataImports.id, importId)).limit(1);
     const batch = batches[0];
@@ -34,13 +42,14 @@ export async function approveImport(importId: number, actor: string) {
       .select({ id: dataImportRows.id })
       .from(dataImportRows)
       .where(and(eq(dataImportRows.importId, importId), inArray(dataImportRows.status, ["needs_review", "rejected"])));
-    if (batch.status === "imported" && !pendingRows.length) throw new Error("This import batch has already been fully imported.");
+    if (batch.status === "imported" && !pendingRows.length && !options.resync) throw new Error("This import batch has already been fully imported.");
     if (batch.status === "rejected") throw new Error("A rejected import batch cannot be approved.");
 
+    const importableStatuses = options.resync ? ["accepted", "imported"] : ["accepted"];
     const rows = await transaction
       .select()
       .from(dataImportRows)
-      .where(and(eq(dataImportRows.importId, importId), eq(dataImportRows.status, "accepted")));
+      .where(and(eq(dataImportRows.importId, importId), inArray(dataImportRows.status, importableStatuses)));
     if (!rows.length) throw new Error("Approve at least one valid row before importing this batch.");
 
     if (batch.datasetType === "institutions") {
@@ -48,21 +57,28 @@ export async function approveImport(importId: number, actor: string) {
         const data = row.normalizedData ?? row.rawData;
         const code = textValue(data, "institution_code");
         if (!code) throw new Error(`Institution row ${row.rowNumber} has no institution code.`);
+        const contact = contactParts(textValue(data, "contact_info"));
         await transaction
           .insert(institutions)
           .values({
             code,
             name: textValue(data, "name", "Unnamed institution"),
             type: textValue(data, "type", "institution"),
+            category: nullable(textValue(data, "category")),
+            board: nullable(textValue(data, "board")),
             ownership: textValue(data, "ownership", "unknown"),
             country: "India",
             state: "Nagaland",
             district: textValue(data, "district", "Unknown"),
             city: nullable(textValue(data, "city_town")),
             officialWebsite: nullable(textValue(data, "official_website")),
+            socialMediaUrl: nullable(textValue(data, "social_media_url")),
             admissionPortal: nullable(textValue(data, "admission_portal")),
+            contactEmail: contact.email,
+            contactPhone: contact.phone,
+            coursesOffered: nullable(textValue(data, "courses_offered")),
             hostelAvailable: textValue(data, "hostel_available", "unknown").toLowerCase() === "yes" ? "yes" : "unknown",
-            studyLevels: stageValue(data, "entry_stage"),
+            studyLevels: stageValues(data, "entry_stage"),
             datasetLabel: `admin-import-${importId}`,
             verificationStatus: textValue(data, "verification_status", "needs_verification"),
             sourceUrl: nullable(textValue(data, "source_url")),
@@ -73,13 +89,19 @@ export async function approveImport(importId: number, actor: string) {
             set: {
               name: textValue(data, "name", "Unnamed institution"),
               type: textValue(data, "type", "institution"),
+              category: nullable(textValue(data, "category")),
+              board: nullable(textValue(data, "board")),
               ownership: textValue(data, "ownership", "unknown"),
               district: textValue(data, "district", "Unknown"),
               city: nullable(textValue(data, "city_town")),
               officialWebsite: nullable(textValue(data, "official_website")),
+              socialMediaUrl: nullable(textValue(data, "social_media_url")),
               admissionPortal: nullable(textValue(data, "admission_portal")),
+              contactEmail: contact.email,
+              contactPhone: contact.phone,
+              coursesOffered: nullable(textValue(data, "courses_offered")),
               hostelAvailable: textValue(data, "hostel_available", "unknown").toLowerCase() === "yes" ? "yes" : "unknown",
-              studyLevels: stageValue(data, "entry_stage"),
+              studyLevels: stageValues(data, "entry_stage"),
               datasetLabel: `admin-import-${importId}`,
               verificationStatus: textValue(data, "verification_status", "needs_verification"),
               sourceUrl: nullable(textValue(data, "source_url")),
@@ -191,7 +213,7 @@ export async function approveImport(importId: number, actor: string) {
       action: "import.approved",
       entityType: "data_import",
       entityRef: String(importId),
-      metadata: { datasetType: batch.datasetType, acceptedRows: rows.length },
+      metadata: { datasetType: batch.datasetType, acceptedRows: rows.length, resync: Boolean(options.resync) },
     });
 
     return { importedRows: rows.length, remainingRows: remainingRows.length, status: nextStatus, datasetType: batch.datasetType };
