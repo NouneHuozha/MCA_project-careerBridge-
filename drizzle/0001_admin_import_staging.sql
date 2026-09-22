@@ -30,3 +30,10 @@ ALTER TABLE "institutions"
 
 ALTER TABLE "institutions"
   ALTER COLUMN "city" TYPE varchar(200);
+
+ALTER TABLE "entrance_exams"
+  ADD COLUMN IF NOT EXISTS "category" varchar(60),
+  ADD COLUMN IF NOT EXISTS "scope" varchar(40),
+  ADD COLUMN IF NOT EXISTS "state" varchar(80),
+  ADD COLUMN IF NOT EXISTS "exam_mode" varchar(40),
+  ADD COLUMN IF NOT EXISTS "status" varchar(24) DEFAULT 'active' NOT NULL;
