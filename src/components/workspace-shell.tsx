@@ -26,11 +26,11 @@ const workspaceLinks: WorkspaceLink[] = [
     matches: ["/dashboard", "/profile", "/counselling"],
   },
   {
-    href: "/explore",
+    href: "/recommendations",
     label: "Explore paths",
     detail: "Fields, careers, and routes",
     icon: Compass,
-    matches: ["/explore", "/careers", "/pathways"],
+    matches: ["/recommendations", "/explore", "/careers", "/pathways"],
   },
   {
     href: "/courses",
