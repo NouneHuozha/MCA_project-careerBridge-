@@ -61,6 +61,11 @@ function nullable(value: string) {
   return value || null;
 }
 
+function urlValue(data: RowData, key: string) {
+  const value = textValue(data, key);
+  return nullable(value.match(/https?:\/\/[^\s;,]+/i)?.[0] ?? "");
+}
+
 export async function approveImport(importId: number, actor: string, options: { resync?: boolean } = {}) {
   return db.transaction(async (transaction) => {
     const batches = await transaction.select().from(dataImports).where(eq(dataImports.id, importId)).limit(1);
@@ -108,9 +113,9 @@ export async function approveImport(importId: number, actor: string, options: { 
             hostelAvailable: textValue(data, "hostel_available", "unknown").toLowerCase() === "yes" ? "yes" : "unknown",
             studyLevels: stageValues(data, "entry_stage"),
             datasetLabel: `admin-import-${importId}`,
-            verificationStatus: textValue(data, "verification_status", "needs_verification"),
-            sourceUrl: nullable(textValue(data, "source_url")),
-            lastVerifiedAt: nullable(textValue(data, "last_verified_at")) ? new Date(textValue(data, "last_verified_at")) : null,
+              verificationStatus: textValue(data, "verification_status", "needs_verification"),
+              sourceUrl: urlValue(data, "source_url"),
+              lastVerifiedAt: nullable(textValue(data, "last_verified_at")) ? new Date(textValue(data, "last_verified_at")) : null,
           })
           .onConflictDoUpdate({
             target: institutions.code,
@@ -132,7 +137,7 @@ export async function approveImport(importId: number, actor: string, options: { 
               studyLevels: stageValues(data, "entry_stage"),
               datasetLabel: `admin-import-${importId}`,
               verificationStatus: textValue(data, "verification_status", "needs_verification"),
-              sourceUrl: nullable(textValue(data, "source_url")),
+              sourceUrl: urlValue(data, "source_url"),
               lastVerifiedAt: nullable(textValue(data, "last_verified_at")) ? new Date(textValue(data, "last_verified_at")) : null,
               updatedAt: new Date(),
             },
@@ -161,7 +166,7 @@ export async function approveImport(importId: number, actor: string, options: { 
             status: textValue(data, "status", "active"),
             preparation: listValue(data, "preparation"),
             levelStage: nullable(textValue(data, "level_stage")),
-            sourceUrl: nullable(textValue(data, "source_url")),
+            sourceUrl: urlValue(data, "source_url"),
             verificationStatus: textValue(data, "verification_status", "needs_verification"),
             lastVerifiedAt: nullable(textValue(data, "last_verified_at")) ? new Date(textValue(data, "last_verified_at")) : null,
           })
@@ -182,7 +187,7 @@ export async function approveImport(importId: number, actor: string, options: { 
               status: textValue(data, "status", "active"),
               preparation: listValue(data, "preparation"),
               levelStage: nullable(textValue(data, "level_stage")),
-              sourceUrl: nullable(textValue(data, "source_url")),
+              sourceUrl: urlValue(data, "source_url"),
               verificationStatus: textValue(data, "verification_status", "needs_verification"),
               lastVerifiedAt: nullable(textValue(data, "last_verified_at")) ? new Date(textValue(data, "last_verified_at")) : null,
             },
@@ -206,7 +211,7 @@ export async function approveImport(importId: number, actor: string, options: { 
             documents: listValue(data, "documents"),
             officialUrl: nullable(textValue(data, "official_url")),
             appliesToStage: listValue(data, "applies_to_stage"),
-            sourceUrl: nullable(textValue(data, "source_url")),
+            sourceUrl: urlValue(data, "source_url"),
             verificationStatus: textValue(data, "verification_status", "needs_verification"),
             lastVerifiedAt: nullable(textValue(data, "last_verified_at")) ? new Date(textValue(data, "last_verified_at")) : null,
           })
@@ -222,7 +227,7 @@ export async function approveImport(importId: number, actor: string, options: { 
               documents: listValue(data, "documents"),
               officialUrl: nullable(textValue(data, "official_url")),
               appliesToStage: listValue(data, "applies_to_stage"),
-              sourceUrl: nullable(textValue(data, "source_url")),
+              sourceUrl: urlValue(data, "source_url"),
               verificationStatus: textValue(data, "verification_status", "needs_verification"),
               lastVerifiedAt: nullable(textValue(data, "last_verified_at")) ? new Date(textValue(data, "last_verified_at")) : null,
             },
