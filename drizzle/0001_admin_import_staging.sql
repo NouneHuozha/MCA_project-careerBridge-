@@ -37,3 +37,9 @@ ALTER TABLE "entrance_exams"
   ADD COLUMN IF NOT EXISTS "state" varchar(80),
   ADD COLUMN IF NOT EXISTS "exam_mode" varchar(40),
   ADD COLUMN IF NOT EXISTS "status" varchar(24) DEFAULT 'active' NOT NULL;
+
+ALTER TABLE "entrance_exams"
+  ALTER COLUMN "name" TYPE varchar(240),
+  ALTER COLUMN "short_name" TYPE varchar(80),
+  ALTER COLUMN "conducting_body" TYPE varchar(320),
+  ALTER COLUMN "application_period" TYPE varchar(320);
