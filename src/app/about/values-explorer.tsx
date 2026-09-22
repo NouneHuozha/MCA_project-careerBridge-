@@ -2,9 +2,16 @@
 
 import { useState } from "react";
 
-export function ValuesExplorer({ values }) {
+type ExplorerValue = {
+  title: string;
+  detail: string;
+};
+
+export function ValuesExplorer({ values }: { values: ExplorerValue[] }) {
   const [active, setActive] = useState(0);
-  const current = values[active];
+  const current = values[active] ?? values[0];
+
+  if (!current) return null;
 
   return (
     <div className="grid gap-px overflow-hidden rounded-2xl border border-ink-100 bg-ink-100 lg:grid-cols-[13rem_1fr]">

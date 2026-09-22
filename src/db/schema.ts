@@ -699,12 +699,36 @@ export const knowledgeChunks = pgTable(
 export const dataImports = pgTable("data_imports", {
   id: serial("id").primaryKey(),
   datasetLabel: varchar("dataset_label", { length: 80 }).notNull(),
+  datasetType: varchar("dataset_type", { length: 32 }).notNull().default("unknown"), // institutions | exams | scholarships
   fileName: varchar("file_name", { length: 200 }),
+  fileContentBase64: text("file_content_base64"),
+  sourceHash: varchar("source_hash", { length: 64 }),
   recordCount: integer("record_count").notNull().default(0),
+  warningCount: integer("warning_count").notNull().default(0),
+  errorCount: integer("error_count").notNull().default(0),
+  status: varchar("status", { length: 24 }).notNull().default("uploaded"), // uploaded | needs_review | approved | imported | rejected
   importedBy: varchar("imported_by", { length: 120 }),
   notes: text("notes"),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
   createdAt: createdAt(),
 });
+
+export const dataImportRows = pgTable(
+  "data_import_rows",
+  {
+    id: serial("id").primaryKey(),
+    importId: integer("import_id").notNull(),
+    sheetName: varchar("sheet_name", { length: 120 }),
+    rowNumber: integer("row_number").notNull(),
+    rawData: jsonb("raw_data").$type<Record<string, unknown>>().notNull(),
+    normalizedData: jsonb("normalized_data").$type<Record<string, unknown>>(),
+    status: varchar("status", { length: 24 }).notNull().default("needs_review"), // needs_review | accepted | rejected | imported
+    warnings: jsonb("warnings").$type<string[]>().default([]),
+    errors: jsonb("errors").$type<string[]>().default([]),
+    createdAt: createdAt(),
+  },
+  (t) => [index("data_import_rows_import_idx").on(t.importId)],
+);
 
 export const auditEvents = pgTable("audit_events", {
   id: serial("id").primaryKey(),

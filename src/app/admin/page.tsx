@@ -1,11 +1,14 @@
 import { Badge, Callout, Card, SectionHeading, VerificationBadge, formatDate } from "@/components/ui";
 import { getCourses, getExams, getInstitutions, getOpportunities, getScholarships } from "@/services/catalog";
 import { aiStatus } from "@/ai";
-import { authProviderName } from "@/auth";
+import { authProviderName, getCurrentUser } from "@/auth";
 import { mapsConfigured } from "@/maps";
 import { db } from "@/db";
 import { dataImports, knowledgeChunks, knowledgeDocuments } from "@/db/schema";
 import { sql } from "drizzle-orm";
+import { redirect } from "next/navigation";
+import { AdminImportUploader } from "@/components/admin-import-uploader";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Data & verification" };
@@ -23,6 +26,9 @@ async function safeCount(table: "knowledge_documents" | "knowledge_chunks") {
 }
 
 export default async function AdminPage() {
+  const currentUser = await getCurrentUser();
+  if (!currentUser || currentUser.role !== "admin") redirect("/sign-in?next=/admin");
+
   const [institutions, courses, exams, scholarships, opportunities, docs, chunks] = await Promise.all([
     getInstitutions({}),
     getCourses({}),
@@ -51,8 +57,8 @@ export default async function AdminPage() {
     <div className="cb-container py-12">
       <SectionHeading
         eyebrow="Administration"
-        title="Data &amp; verification status"
-        description="A read-only view of what the platform holds, where it came from, and what still needs verification. Editing tools sit on top of this same schema."
+        title="Data &amp; verification workspace"
+        description="Review what the platform holds, stage new Excel workbooks, and keep source and verification information visible before anything reaches students."
       />
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -72,6 +78,8 @@ export default async function AdminPage() {
           </Card>
         ))}
       </div>
+
+      <AdminImportUploader />
 
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
         <Card className="p-6">
@@ -123,10 +131,12 @@ export default async function AdminPage() {
           <ul className="mt-3 space-y-3 text-sm">
             {imports.map((entry) => (
               <li key={entry.id} className="rounded-lg border border-ink-100 p-3">
-                <p className="font-medium text-ink-800">{entry.datasetLabel}</p>
-                <p className="text-xs text-ink-500">
-                  {entry.recordCount} records · {entry.fileName} · {formatDate(entry.createdAt)}
-                </p>
+                <Link href={`/admin/imports/${entry.id}`} className="block rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-forest-700">
+                  <p className="font-medium text-ink-800">{entry.datasetLabel}</p>
+                  <p className="text-xs text-ink-500">
+                    {entry.recordCount} records · {entry.fileName} · {formatDate(entry.createdAt)} · {entry.status}
+                  </p>
+                </Link>
                 {entry.notes ? <p className="mt-1 text-xs text-ink-500">{entry.notes}</p> : null}
               </li>
             ))}
