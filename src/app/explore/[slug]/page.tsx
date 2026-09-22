@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, BookOpen, BriefcaseBusiness, Building2, GraduationCap, HeartHandshake, Lightbulb, Route, ShieldCheck } from "lucide-react";
 import { Badge, BulletList, ButtonLink, Callout, Disclosure } from "@/components/ui";
 import { DetailTabs } from "@/components/detail-tabs";
-import { DetailHeader, LinkRow, MiniJourney, NextStepPanel, NoCatalogItems } from "@/components/detail-parts";
+import { DetailHeader, JourneyStepper, LinkRow, NextStepPanel, NoCatalogItems } from "@/components/detail-parts";
 import { FieldIcon, fieldVisual } from "@/components/field-visuals";
 import { SaveButton } from "@/components/save-button";
 import { getCareers, getCourses, getField, getFields, getInstitutions, getPathways } from "@/services/catalog";
@@ -40,9 +40,10 @@ export default async function FieldPage({ params }: { params: Promise<{ slug: st
     <Disclosure summary="What else could I explore?"><BulletList items={field.alternatives ?? []} /><div className="mt-4 space-y-2">{related.map((r) => <LinkRow key={r.slug} href={`/explore/${r.slug}`} title={r.name} icon={<FieldIcon slug={r.slug} className="h-4 w-4" />} action="Explore" />)}</div></Disclosure>
   </div>;
   return <div className="cb-container cb-page">
-    <div className="mb-5"><MiniJourney /></div>
-    <DetailHeader eyebrow="Explore a field" title={field.name} description={field.tagline} icon={<FieldIcon slug={field.slug} className="h-6 w-6" />} accent={fieldVisual(field.slug).accent} actions={<><ButtonLink href={`/pathways?field=${field.slug}`}>Explore pathways<ArrowRight aria-hidden className="h-4 w-4" /></ButtonLink><SaveButton itemType="field" itemRef={field.slug} label={field.name} /></>} />
-    <div className="cb-detail-content"><DetailTabs tabs={[{ id: "overview", label: "At a glance", content: overview }, { id: "careers", label: "Careers", content: careerContent }, { id: "pathways", label: "Study routes", content: studyContent }, { id: "reflect", label: "Is it for me?", content: reflect }]} />
+    <div className="mb-6"><JourneyStepper current={1} /></div>
+    <DetailHeader eyebrow="Step 2 · Explore paths" title={field.name} description={field.tagline} icon={<FieldIcon slug={field.slug} className="h-6 w-6" />} accent={fieldVisual(field.slug).accent} actions={<><ButtonLink href="#pathways">See study routes<ArrowRight aria-hidden className="h-4 w-4" /></ButtonLink><SaveButton itemType="field" itemRef={field.slug} label={field.name} /></>} />
+    <div className="mb-5 rounded-xl border border-forest-200 bg-mint/45 p-4 text-sm text-ink-700"><strong className="text-forest-800">Start here:</strong> understand the kind of work first. When you are ready, open <strong>Routes to enter</strong> to see courses, pathways and colleges.</div>
+    <div className="cb-detail-content"><DetailTabs tabs={[{ id: "overview", label: "Understand this field", content: overview }, { id: "careers", label: "Possible careers", content: careerContent }, { id: "pathways", label: "Routes to enter", content: studyContent }, { id: "reflect", label: "Think it through", content: reflect }]} />
       <aside className="cb-detail-aside"><NextStepPanel title="See how you could get there." text="Compare the routes before choosing a course. Degrees aren’t the only option." href={`/pathways?field=${field.slug}`} cta="Find a pathway" mentorQuestion={`Help me explore ${field.name}, including reasons it might not suit me.`} />
         <section className="rounded-xl border border-ink-200 bg-white p-5"><h2 className="mb-2 flex items-center gap-2 text-sm font-semibold"><ShieldCheck aria-hidden className="h-4 w-4 text-forest-700" />About this information</h2><p className="text-xs leading-relaxed text-ink-500">General CareerBridge guidance. Course and institution pages show their own sources and verification status.</p></section>
       </aside></div>

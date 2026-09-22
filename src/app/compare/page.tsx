@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { ArrowLeftRight, Scale } from "lucide-react";
-import { ArrowGlyph, Badge, Callout, EmptyState, Eyebrow, accentSurface } from "@/components/ui";
+import { ArrowGlyph, Badge, ButtonLink, Callout, EmptyState, Eyebrow, accentSurface } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { getCareers, getCourses, getInstitutions, getPathways } from "@/services/catalog";
+import { JourneyStepper } from "@/components/detail-parts";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Compare" };
@@ -110,7 +111,7 @@ export default async function ComparePage({
   return (
     <div className="cb-container cb-page">
       <div className="flex items-center gap-2">
-        <Eyebrow className="animate-rise">Compare</Eyebrow>
+        <Eyebrow className="animate-rise">Step 3 · Compare options</Eyebrow>
         <Scale aria-hidden className="h-3.5 w-3.5 text-forest-500" />
       </div>
       <h1 className="animate-rise delay-1 mt-4 text-[clamp(1.9rem,4.2vw,2.6rem)] font-semibold">
@@ -119,6 +120,7 @@ export default async function ComparePage({
       <p className="animate-rise delay-2 mt-3 max-w-lg text-[15px] text-ink-500">
         Similar-sounding choices often differ in duration, cost and what they keep open afterwards.
       </p>
+      <div className="mt-6"><JourneyStepper current={2} /></div>
 
       {/* ------------------------------------------------ kind switcher */}
       <div className="animate-rise delay-3 mt-8 inline-flex flex-wrap gap-1 rounded-full border border-ink-200 bg-white p-1">
@@ -220,6 +222,10 @@ export default async function ComparePage({
                 with the mentor if you&apos;re torn.
               </p>
             </Callout>
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-forest-200 bg-mint/55 p-5">
+              <div><p className="text-sm font-semibold text-ink-900">Ready to take one small next step?</p><p className="mt-1 text-xs text-ink-600">You can save a checklist and keep checking the official details.</p></div>
+              <ButtonLink href={`/action-plan?focus=${type}:${selected[0]}`}>Make a plan<ArrowGlyph /></ButtonLink>
+            </div>
           </section>
         </Reveal>
       ) : (

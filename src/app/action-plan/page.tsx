@@ -2,7 +2,7 @@ import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { ArrowRight, Check, ClipboardList, FileText, GraduationCap, ListChecks, Wallet } from "lucide-react";
 import { ButtonLink, Callout, Disclosure, Eyebrow } from "@/components/ui";
-import { LinkRow } from "@/components/detail-parts";
+import { JourneyStepper, LinkRow } from "@/components/detail-parts";
 import { getCurrentUser } from "@/auth";
 import { buildChecklist, ensurePlan, listPlans, resolveFocus, setItemStatus } from "@/services/student";
 
@@ -25,7 +25,8 @@ export default async function ActionPlanPage({ searchParams }: { searchParams: P
   const plans = user ? await listPlans(user.id) : [];
   const preview = !user ? await buildChecklist(focusType || "field", focusRef || "technology") : [];
   return <div className="cb-container cb-page">
-    <header className="mb-7 flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-forest-200 bg-mint/60 p-6 sm:p-8"><div><Eyebrow>One step at a time</Eyebrow><h1 className="cb-page-title mt-3">A direction. Now a little action.</h1><p className="mt-3 text-sm text-ink-600">{focus ? focus.title : "A practical checklist to keep you moving, without rushing you."}</p></div><ListChecks aria-hidden className="hidden h-16 w-16 shrink-0 text-forest-600 sm:block" strokeWidth={1.3} /></header>
+    <header className="mb-6 flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-forest-200 bg-mint/60 p-6 sm:p-8"><div><Eyebrow>Step 4 · Plan next steps</Eyebrow><h1 className="cb-page-title mt-3">A direction. Now a little action.</h1><p className="mt-3 text-sm text-ink-600">{focus ? focus.title : "A practical checklist to keep you moving, without rushing you."}</p></div><ListChecks aria-hidden className="hidden h-16 w-16 shrink-0 text-forest-600 sm:block" strokeWidth={1.3} /></header>
+    <div className="mb-7"><JourneyStepper current={3} /></div>
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px] 2xl:grid-cols-[minmax(0,1fr)_380px]">
       <div className="space-y-5">
         {saveError && <Callout tone="amber" title="We couldn’t save this plan"><p>Please try again. Your other plans are safe.</p></Callout>}
