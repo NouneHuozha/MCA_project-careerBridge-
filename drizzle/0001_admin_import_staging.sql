@@ -27,3 +27,6 @@ ALTER TABLE "institutions"
   ADD COLUMN IF NOT EXISTS "board" varchar(100),
   ADD COLUMN IF NOT EXISTS "social_media_url" text,
   ADD COLUMN IF NOT EXISTS "courses_offered" text;
+
+ALTER TABLE "institutions"
+  ALTER COLUMN "city" TYPE varchar(200);

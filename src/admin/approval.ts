@@ -29,6 +29,34 @@ function contactParts(value: string) {
   return { email, phone };
 }
 
+const NAGALAND_DISTRICTS: Record<string, string> = {
+  chumoukedima: "Chümoukedima",
+  dimapur: "Dimapur",
+  kiphire: "Kiphire",
+  kohima: "Kohima",
+  longleng: "Longleng",
+  meluri: "Meluri",
+  mokokchung: "Mokokchung",
+  mon: "Mon",
+  niuland: "Niuland",
+  noklak: "Noklak",
+  peren: "Peren",
+  phek: "Phek",
+  shamator: "Shamator",
+  tseminyu: "Tseminyü",
+  tuensang: "Tuensang",
+  wokha: "Wokha",
+  zunheboto: "Zünheboto",
+};
+
+function institutionDistrict(data: RowData) {
+  const raw = textValue(data, "district");
+  const lower = raw.toLowerCase();
+  const reassigned = lower.match(/falls under\s+([a-zü]+)\s+district/);
+  const key = reassigned?.[1] ?? Object.keys(NAGALAND_DISTRICTS).find((district) => lower === district || lower.includes(`${district} district`));
+  return key ? NAGALAND_DISTRICTS[key] : raw.slice(0, 60) || "Unknown";
+}
+
 function nullable(value: string) {
   return value || null;
 }
@@ -69,7 +97,7 @@ export async function approveImport(importId: number, actor: string, options: { 
             ownership: textValue(data, "ownership", "unknown"),
             country: "India",
             state: "Nagaland",
-            district: textValue(data, "district", "Unknown"),
+            district: institutionDistrict(data),
             city: nullable(textValue(data, "city_town")),
             officialWebsite: nullable(textValue(data, "official_website")),
             socialMediaUrl: nullable(textValue(data, "social_media_url")),
@@ -92,7 +120,7 @@ export async function approveImport(importId: number, actor: string, options: { 
               category: nullable(textValue(data, "category")),
               board: nullable(textValue(data, "board")),
               ownership: textValue(data, "ownership", "unknown"),
-              district: textValue(data, "district", "Unknown"),
+              district: institutionDistrict(data),
               city: nullable(textValue(data, "city_town")),
               officialWebsite: nullable(textValue(data, "official_website")),
               socialMediaUrl: nullable(textValue(data, "social_media_url")),

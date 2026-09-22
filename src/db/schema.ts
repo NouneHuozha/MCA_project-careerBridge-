@@ -394,7 +394,7 @@ export const institutions = pgTable(
     country: varchar("country", { length: 60 }).notNull().default("India"),
     state: varchar("state", { length: 60 }).notNull().default("Nagaland"),
     district: varchar("district", { length: 60 }).notNull(),
-    city: varchar("city", { length: 80 }),
+    city: varchar("city", { length: 200 }),
     latitude: doublePrecision("latitude"),
     longitude: doublePrecision("longitude"),
     officialWebsite: text("official_website"),
