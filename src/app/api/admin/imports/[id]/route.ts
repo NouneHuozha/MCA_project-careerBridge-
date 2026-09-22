@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { getCurrentUser } from "@/auth";
 import { db } from "@/db";
 import { auditEvents, dataImportRows, dataImports } from "@/db/schema";
@@ -60,7 +60,28 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
   if (!importId) return NextResponse.json({ error: "Invalid import id." }, { status: 400 });
 
   try {
-    const body = (await request.json()) as { rowId?: number; status?: string; normalizedData?: Record<string, unknown> };
+    const body = (await request.json()) as { rowId?: number; rowIds?: number[]; status?: string; normalizedData?: Record<string, unknown> };
+    if (body.rowIds?.length) {
+      if (!body.status || !["needs_review", "accepted", "rejected"].includes(body.status)) {
+        return NextResponse.json({ error: "Choose needs_review, accepted, or rejected." }, { status: 400 });
+      }
+      const rowIds = [...new Set(body.rowIds.map(Number))].filter((id) => Number.isSafeInteger(id) && id > 0);
+      if (!rowIds.length) return NextResponse.json({ error: "No valid staged rows were selected." }, { status: 400 });
+      const matchingRows = await db
+        .select({ id: dataImportRows.id })
+        .from(dataImportRows)
+        .where(and(eq(dataImportRows.importId, importId), inArray(dataImportRows.id, rowIds)));
+      if (matchingRows.length !== rowIds.length) return NextResponse.json({ error: "One or more selected rows do not belong to this import." }, { status: 400 });
+      await db.update(dataImportRows).set({ status: body.status }).where(and(eq(dataImportRows.importId, importId), inArray(dataImportRows.id, rowIds)));
+      await db.insert(auditEvents).values({
+        actor: user.email,
+        action: "import.rows_bulk_updated",
+        entityType: "data_import",
+        entityRef: String(importId),
+        metadata: { rowIds, status: body.status },
+      });
+      return NextResponse.json({ rowIds, status: body.status, message: `${rowIds.length} staged rows updated.` });
+    }
     const rowId = Number(body.rowId);
     if (!Number.isSafeInteger(rowId) || rowId <= 0) return NextResponse.json({ error: "Invalid row id." }, { status: 400 });
     if (!body.status || !["needs_review", "accepted", "rejected"].includes(body.status)) {
