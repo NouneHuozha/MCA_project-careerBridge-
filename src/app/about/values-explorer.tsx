@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 
-export function ValuesExplorer({ values }) {
+type Value = { title: string; detail: string };
+
+export function ValuesExplorer({ values }: { values: Value[] }) {
   const [active, setActive] = useState(0);
   const current = values[active];
 
