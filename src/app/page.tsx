@@ -24,9 +24,12 @@ export default async function HomePage() {
       <div className="cb-container relative grid items-center gap-12 py-12 lg:min-h-[650px] lg:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)] lg:py-16 2xl:min-h-[720px]">
         <div className="max-w-2xl">
           <div className="animate-rise flex flex-wrap items-center gap-3"><Eyebrow>Career and education guidance · Nagaland</Eyebrow><span className="rounded-full border border-forest-200 bg-white/70 px-3 py-1 text-xs font-semibold text-forest-700">For Class 10 &amp; 12</span></div>
-          <h1 className="animate-rise delay-1 mt-6 max-w-[12ch] text-[clamp(2.7rem,5.4vw,5.6rem)] font-semibold leading-[1.03] tracking-[-.055em]">Start with <span className="text-forest-700">yourself.</span></h1>
+          <h1 className="animate-rise delay-1 mt-6 max-w-[14ch] text-[clamp(2.7rem,5.4vw,5.6rem)] font-semibold leading-[1.03] tracking-[-.055em]">Your path is yours <span className="text-forest-700">to shape.</span></h1>
           <p className="animate-rise delay-2 mt-6 max-w-[52ch] text-lg leading-relaxed text-ink-600">Career choices become easier to think about when you understand what interests you, what matters to you and what options are actually available.</p>
-          <div className="animate-rise delay-3 mt-8 flex flex-wrap items-center gap-3"><ButtonLink href="/start" size="lg">Start here<ArrowRight aria-hidden className="h-5 w-5" /></ButtonLink><Link href="/how-it-works" className="cb-button cb-button-secondary px-5 py-3.5">See how it works</Link></div>
+          <div className="animate-rise delay-3 mt-8 flex flex-wrap items-center gap-3">
+            <Link href="/start" className="cb-button cb-cta-650 cb-button-primary px-6 py-3.5 text-base">Start exploring<ArrowRight aria-hidden className="h-5 w-5" /></Link>
+            <Link href="/how-it-works" className="cb-button cb-button-secondary px-5 py-3.5">See how it works</Link>
+          </div>
           <p className="mt-4 flex items-center gap-2 text-sm text-ink-500"><ShieldCheck aria-hidden className="h-4 w-4 text-forest-600" />No right answer. No career chosen for you.</p>
         </div>
         <div className="relative min-w-0 lg:pl-8">
