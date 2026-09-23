@@ -178,3 +178,59 @@
   *,*::before,*::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
   .cb-reveal, .cb-reveal[data-animate="true"] { opacity:1; transform:none; }
 }
+
+@layer components {
+  .concept-header { position: sticky; top: 0; z-index: 50; height: 72px; border-bottom: 1px solid #dfe7de; background: rgba(255,255,255,.94); backdrop-filter: blur(16px); }
+  .concept-header-inner { display: flex; height: 100%; align-items: center; gap: 2rem; padding-inline: clamp(1rem, 3vw, 3rem); }
+  .concept-logo { display: inline-flex; flex-shrink: 0; align-items: center; }
+  .concept-logo img { width: 154px; height: auto; }
+  .concept-nav { display: flex; align-items: center; gap: .35rem; margin-left: clamp(1rem, 3vw, 4rem); }
+  .concept-nav-link { padding: .5rem .85rem; border-radius: 999px; color: var(--color-ink-700); font-size: .95rem; font-weight: 600; transition: background .18s, color .18s; }
+  .concept-nav-link:hover, .concept-nav-link-active { background: var(--color-mint); color: var(--color-forest-800); }
+  .concept-header-actions { display: flex; align-items: center; gap: .8rem; margin-left: auto; }
+  .concept-icon-button { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border: 0; border-radius: 999px; color: var(--color-ink-800); background: transparent; }
+  .concept-icon-button:hover { background: var(--color-ink-50); }
+  .concept-header-divider { width: 1px; height: 1.9rem; background: var(--color-ink-100); }
+  .concept-avatar { display: grid; place-items: center; width: 2.3rem; height: 2.3rem; border-radius: 50%; background: var(--color-lavender); color: var(--color-lavender-ink); font-size: .8rem; font-weight: 800; }
+  .concept-profile { position: relative; }
+  .concept-profile summary { display: flex; align-items: center; gap: .55rem; list-style: none; cursor: pointer; }
+  .concept-profile summary::-webkit-details-marker { display: none; }
+  .concept-profile strong, .concept-profile small { display: block; }
+  .concept-profile strong { color: var(--color-ink-900); font-size: .85rem; }
+  .concept-profile small { color: var(--color-ink-500); font-size: .72rem; }
+  .concept-profile-menu { position: absolute; right: 0; top: calc(100% + .8rem); display: grid; min-width: 11rem; gap: .25rem; padding: .5rem; border: 1px solid var(--color-ink-100); border-radius: 1rem; background: #fff; box-shadow: 0 18px 45px -24px #16362b55; }
+  .concept-profile-menu a, .concept-profile-menu button { display: block; width: 100%; padding: .6rem .7rem; border: 0; border-radius: .65rem; background: transparent; color: var(--color-ink-700); text-align: left; font-size: .8rem; }
+  .concept-profile-menu a:hover, .concept-profile-menu button:hover { background: var(--color-ink-50); }
+  .concept-menu-button, .concept-mobile-menu { display: none; }
+  .concept-canvas { max-width: 1440px; margin-inline: auto; padding: clamp(1.25rem, 3vw, 3rem); }
+  .concept-workspace { display: grid; grid-template-columns: 225px minmax(0, 1fr); gap: clamp(1.25rem, 3vw, 3rem); max-width: 1440px; margin-inline: auto; padding: clamp(1rem, 2.5vw, 2.5rem); }
+  .concept-rail { min-width: 0; }
+  .concept-rail-card { position: sticky; top: 96px; min-height: calc(100vh - 128px); padding: 1.25rem .8rem; border-radius: 1.35rem; background: linear-gradient(180deg, #edf4f9 0%, #f2f6f1 68%, #dceee1 100%); }
+  .concept-rail-title { padding: .4rem .6rem .8rem; color: var(--color-ink-900); font-size: .95rem; font-weight: 800; }
+  .concept-rail-subtitle { padding: 0 .6rem; color: var(--color-ink-500); font-size: .72rem; }
+  .concept-rail-list { display: grid; gap: .2rem; margin-top: 1.8rem; }
+  .concept-rail-link { display: flex; align-items: center; gap: .65rem; min-height: 3.65rem; padding: .6rem .65rem; border-radius: .85rem; color: var(--color-ink-700); }
+  .concept-rail-link:hover { background: #ffffffaa; }
+  .concept-rail-link-active { background: #e8e1f8; color: var(--color-lavender-ink); }
+  .concept-rail-dot { display: grid; place-items: center; width: 1.75rem; height: 1.75rem; flex-shrink: 0; border-radius: 999px; background: #fff; color: var(--color-ink-500); font-size: .7rem; font-weight: 800; }
+  .concept-rail-link-done .concept-rail-dot { background: var(--color-forest-600); color: #fff; }
+  .concept-rail-note { margin: 2rem .55rem 0; padding-top: 1rem; border-top: 1px solid #ffffffaa; color: var(--color-ink-500); font-size: .75rem; line-height: 1.5; }
+  .concept-main { min-width: 0; max-width: 1120px; }
+  .concept-page-header { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.5rem; }
+  .concept-kicker { color: var(--color-forest-600); font-size: .68rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+  .concept-title { margin-top: .55rem; color: var(--color-ink-900); font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 750; letter-spacing: -.055em; line-height: 1.03; }
+  .concept-subtitle { max-width: 58ch; margin-top: .8rem; color: var(--color-ink-500); font-size: 1rem; line-height: 1.55; }
+  .concept-hero { position: relative; overflow: hidden; border-radius: 1.45rem; background: linear-gradient(115deg, #dff2e6 0%, #eff6f2 52%, #ece7fa 100%); }
+  .concept-hero::after { content: ""; position: absolute; right: -5rem; top: -5rem; width: 18rem; height: 18rem; border-radius: 50%; background: #ffffff55; }
+  .concept-section-label { color: var(--color-ink-500); font-size: .73rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+  .concept-soft-panel { border-radius: 1.2rem; background: #fff; box-shadow: 0 18px 45px -38px #18362b70; }
+  .concept-option { display: flex; align-items: center; gap: 1rem; min-height: 7rem; padding: 1rem 1.1rem; border: 1px solid transparent; border-radius: 1.1rem; background: #fff; text-align: left; transition: transform .18s, border-color .18s, box-shadow .18s; }
+  .concept-option:hover { transform: translateY(-2px); border-color: var(--color-forest-300); box-shadow: 0 15px 30px -24px #18362b88; }
+  .concept-option-icon { display: grid; place-items: center; width: 3.1rem; height: 3.1rem; flex-shrink: 0; border-radius: 1rem; }
+  .concept-route-card { position: relative; overflow: hidden; padding: 1.25rem; border: 1px solid var(--color-ink-100); border-radius: 1.2rem; background: #fff; }
+  .concept-route-card::before { content: ""; display: block; height: 7.5rem; margin: -1.25rem -1.25rem 1rem; background: linear-gradient(140deg, #d5eee0, #f9e9b9); }
+  .concept-compact-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--color-ink-100); }
+  .concept-compact-row:last-child { border-bottom: 0; }
+  .concept-image-frame { overflow: hidden; border-radius: 1.2rem; background: var(--color-sky); }
+  @media (max-width: 900px) { .concept-header { height: 64px; } .concept-nav, .concept-header-actions { display: none; } .concept-menu-button { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; margin-left: auto; border: 1px solid var(--color-ink-200); border-radius: .8rem; background: #fff; } .concept-mobile-menu { display: block; position: absolute; left: 0; right: 0; top: 64px; padding: .75rem 1rem 1rem; border-bottom: 1px solid var(--color-ink-100); background: #fff; box-shadow: 0 20px 35px -28px #18362b70; } .concept-mobile-menu nav { display: grid; gap: .35rem; } .concept-mobile-link { padding: .8rem 1rem; border-radius: .8rem; color: var(--color-ink-700); font-weight: 650; } .concept-mobile-link-active, .concept-mobile-link:hover { background: var(--color-mint); color: var(--color-forest-800); } .concept-workspace { grid-template-columns: 1fr; gap: .8rem; } .concept-rail-card { position: static; min-height: 0; padding: .65rem; overflow-x: auto; } .concept-rail-title, .concept-rail-subtitle, .concept-rail-note { display: none; } .concept-rail-list { display: flex; min-width: max-content; margin-top: 0; gap: .3rem; } .concept-rail-link { min-height: 2.6rem; padding: .45rem .65rem; } .concept-rail-link span:last-child { display: none; } .concept-rail-dot { width: 1.55rem; height: 1.55rem; } .concept-page-header { align-items: start; flex-direction: column; gap: 1rem; } }
+}

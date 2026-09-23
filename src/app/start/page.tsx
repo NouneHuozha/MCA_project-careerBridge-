@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { ArrowRight, Check, GraduationCap, HelpCircle, School, Sparkles } from "lucide-react";
 import { ArrowGlyph, Button, Eyebrow } from "@/components/ui";
-import { Blob, DottedGrid } from "@/components/decor";
 import { startSession } from "@/services/profile";
 import { questionsForStage, type Stage } from "@/data/counselling";
+import { WorkspacePage } from "@/components/journey-workspace";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Start your journey" };
@@ -26,8 +26,8 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
     redirect("/counselling");
   }
 
-  return <div className="relative overflow-hidden"><Blob className="pointer-events-none absolute -right-24 -top-16 h-72 w-72 text-mint/70" /><DottedGrid className="pointer-events-none absolute bottom-24 left-6 hidden h-12 w-24 text-ink-200 lg:block" />
-    <div className="cb-container relative max-w-4xl py-10 sm:py-14 lg:py-20">
+  return <WorkspacePage active="start">
+    <div className="concept-main max-w-4xl py-5 sm:py-10">
       <div className="animate-rise flex items-center gap-3"><Eyebrow>Step 1 of 3</Eyebrow><span aria-hidden className="h-px flex-1 bg-ink-200" /><span className="hidden items-center gap-1.5 text-xs font-semibold text-ink-500 sm:flex"><Sparkles aria-hidden className="h-3.5 w-3.5 text-butter-ink" />About 2 minutes</span></div>
       <div className="mt-6 max-w-2xl"><h1 className="animate-rise delay-1 text-[clamp(2rem,4.5vw,3.4rem)] font-semibold">Let’s find your starting point.</h1><p className="animate-rise delay-2 mt-4 text-base leading-relaxed text-ink-600 sm:text-lg">First, tell us where you are in your education journey. This only changes which questions and options we show you—it does not decide anything for you.</p></div>
       <form action={begin} className="mt-9 space-y-8">
@@ -37,5 +37,5 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
       </form>
       <p className="mt-5 text-center text-xs text-ink-400 sm:text-left">{count} short questions · We never ask for your exact address.</p>
     </div>
-  </div>;
+  </WorkspacePage>;
 }
