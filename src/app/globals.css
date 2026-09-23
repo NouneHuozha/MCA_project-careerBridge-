@@ -1,7 +1,4 @@
 @import "tailwindcss";
-@import "@fontsource-variable/plus-jakarta-sans";
-@import "@fontsource-variable/inter";
-@import "@fontsource/caveat/600.css";
 
 @theme {
   --color-canvas: #faf8f3;
