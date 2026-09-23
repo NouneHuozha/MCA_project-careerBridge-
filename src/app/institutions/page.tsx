@@ -6,6 +6,7 @@ import { InstitutionMap } from "@/components/institution-map";
 import { catalogFilters, getCourses, getDistricts, getFields, getInstitutions } from "@/services/catalog";
 import { getSessionState } from "@/services/profile";
 import { districtCentre, distanceLabel, mapSearchUrl } from "@/maps";
+import { WorkspacePage } from "@/components/journey-workspace";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Institutions in Nagaland" };
@@ -49,7 +50,7 @@ export default async function InstitutionsPage({
   const activeFilters = ["district", "type", "ownership", "level", "field", "course"].filter((k) => params[k]).length;
 
   return (
-    <div className="cb-container cb-page">
+    <WorkspacePage active="study">
       {/* ------------------------------------------------------ header */}
       <div className="flex flex-wrap items-end justify-between gap-6 rounded-2xl border border-sky-ink/20 bg-sky/35 p-6 sm:p-8">
         <div className="max-w-lg">
@@ -302,6 +303,6 @@ export default async function InstitutionsPage({
           </Callout>
         </aside>
       </div>
-    </div>
+    </WorkspacePage>
   );
 }

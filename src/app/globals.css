@@ -122,6 +122,23 @@
   .cb-reading p { margin-bottom: .8rem; }
   .cb-reading p:last-child { margin-bottom: 0; }
   .cb-reading strong { color: var(--color-ink-900); font-weight: 650; }
+  .workspace-page { display: grid; grid-template-columns: 250px minmax(0,1fr); gap: clamp(1.5rem, 3vw, 3.5rem); align-items: start; max-width: 1440px; }
+  .workspace-main { min-width: 0; max-width: 1080px; width: 100%; }
+  .journey-rail { position: sticky; top: 6.5rem; min-width: 0; }
+  .journey-rail-inner { min-height: calc(100vh - 9rem); padding: 1.4rem 1rem 1.2rem; border-radius: 1.5rem; background: linear-gradient(180deg, #eaf2f8 0%, #f0f5f1 72%, #dceee1 100%); }
+  .journey-rail-brand { display: flex; align-items: center; gap: .75rem; padding: .4rem .35rem; }
+  .journey-rail-mark { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: .7rem; background: var(--color-forest-700); color: #fff; }
+  .journey-step { display: flex; align-items: center; gap: .75rem; min-height: 4.2rem; padding: .7rem .75rem; border-radius: .9rem; color: var(--color-ink-700); transition: background .18s, transform .18s; }
+  .journey-step:hover { background: #ffffffaa; transform: translateX(2px); }
+  .journey-step-active { background: #e8e1f8; color: var(--color-lavender-ink); }
+  .journey-step-done .journey-step-marker { background: var(--color-forest-600); color: #fff; }
+  .journey-step-marker { display: grid; place-items: center; width: 2rem; height: 2rem; flex-shrink: 0; border-radius: 999px; background: #ffffffb8; color: var(--color-ink-500); }
+  .journey-rail-note { margin: 2rem .35rem 0; padding: 1rem; border-top: 1px solid #ffffffaa; }
+  .workspace-back { display: inline-flex; align-items: center; gap: .4rem; color: var(--color-forest-700); font-size: .8rem; font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
+  .workspace-eyebrow { color: var(--color-forest-700); font-size: .7rem; font-weight: 750; letter-spacing: .16em; text-transform: uppercase; }
+  .workspace-hero { position: relative; overflow: hidden; border-radius: 1.6rem; background: linear-gradient(120deg, #e0f0e5, #f7f4fc 66%, #e3eff5); }
+  .workspace-hero::after { content: ""; position: absolute; right: -3rem; top: -4rem; width: 15rem; height: 15rem; border-radius: 50%; background: #ffffff55; }
+  @media (max-width: 900px) { .workspace-page { grid-template-columns: 1fr; gap: .75rem; } .journey-rail { position: static; } .journey-rail-inner { min-height: auto; padding: .75rem; overflow-x: auto; } .journey-rail-brand { display: none; } .journey-rail-inner ol { display: flex; min-width: max-content; margin-top: 0; gap: .35rem; } .journey-step { min-height: 2.8rem; padding: .5rem .65rem; } .journey-step-marker { width: 1.6rem; height: 1.6rem; } .journey-step span:last-child { display: none; } .journey-rail-note { display: none; } }
 }
 
 @media (min-width: 1100px) {
@@ -135,6 +152,7 @@
   .cb-counselling-shell { height: calc(100svh - 180px); min-height: 550px; }
   .cb-mentor-shell { height: calc(100svh - 195px); min-height: 450px; }
   .cb-mentor-widget { right: .8rem; bottom: max(.8rem,env(safe-area-inset-bottom)); }
+  .workspace-page { padding-top: .25rem; }
 }
 
 @keyframes cb-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }

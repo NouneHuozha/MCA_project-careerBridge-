@@ -4,6 +4,7 @@ import { ArrowGlyph, Badge, FilterDisclosure, EmptyState, Eyebrow, VerificationB
 import { levelLabelSafe } from "@/components/course-helpers";
 import { Reveal } from "@/components/reveal";
 import { getCourses, getFields } from "@/services/catalog";
+import { WorkspacePage } from "@/components/journey-workspace";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Courses" };
@@ -41,7 +42,7 @@ export default async function CoursesPage({
   };
 
   return (
-    <div className="cb-container cb-page">
+    <WorkspacePage active="study">
       <div className="flex flex-wrap items-end justify-between gap-6 rounded-2xl border border-lavender-ink/20 bg-lavender/25 p-6 sm:p-8">
         <div className="max-w-lg">
           <Eyebrow className="animate-rise">Courses</Eyebrow>
@@ -179,6 +180,6 @@ export default async function CoursesPage({
           />
         </div>
       ) : null}
-    </div>
+    </WorkspacePage>
   );
 }

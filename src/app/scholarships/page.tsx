@@ -4,6 +4,7 @@ import { Badge, BulletList, ButtonLink, Callout, Disclosure, Eyebrow, SourceLink
 import { SaveButton } from "@/components/save-button";
 import { getScholarships } from "@/services/catalog";
 import { getSessionState } from "@/services/profile";
+import { WorkspacePage } from "@/components/journey-workspace";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Scholarships" };
@@ -14,7 +15,7 @@ export default async function ScholarshipsPage({ searchParams }: { searchParams:
   const stage = ["class10", "class12", "undergraduate"].includes(params.stage ?? "") ? params.stage : null;
   const filtered = scholarships.filter((s) => !stage || (s.appliesToStage ?? []).includes(stage));
   const ordered = state ? [...filtered].sort((a, b) => Number((b.appliesToStage ?? []).includes(state.stage)) - Number((a.appliesToStage ?? []).includes(state.stage))) : filtered;
-  return <div className="cb-container cb-page">
+  return <WorkspacePage active="plan">
     <header className="flex flex-wrap items-center justify-between gap-7 rounded-2xl border border-butter-ink/20 bg-[#fbf3dc] p-6 sm:p-8">
       <div><Eyebrow>A little support goes a long way</Eyebrow><h1 className="cb-page-title mt-3">More possibilities. Less financial worry.</h1><p className="mt-3 max-w-xl text-sm text-ink-600">Explore scholarship schemes, then check the official portal for current details.</p></div><span aria-hidden className="grid h-20 w-20 shrink-0 place-items-center rounded-[1.5rem] border border-butter-ink/15 bg-butter text-butter-ink"><Award className="h-10 w-10" strokeWidth={1.3} /></span>
     </header>
@@ -29,5 +30,5 @@ export default async function ScholarshipsPage({ searchParams }: { searchParams:
       </div>
     </article>)}</div>
     <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-forest-200 bg-mint/45 p-6"><div><h2 className="flex items-center gap-2 text-lg font-semibold"><Wallet aria-hidden className="h-5 w-5 text-forest-700" />Make support part of your plan.</h2><p className="mt-2 text-sm text-ink-500">Keep scholarship checks beside your course and admission tasks.</p></div><ButtonLink href="/action-plan">View my next steps<ArrowRight aria-hidden className="h-4 w-4" /></ButtonLink></div>
-  </div>;
+  </WorkspacePage>;
 }

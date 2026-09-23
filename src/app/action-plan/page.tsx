@@ -5,6 +5,7 @@ import { ButtonLink, Callout, Disclosure, Eyebrow } from "@/components/ui";
 import { LinkRow } from "@/components/detail-parts";
 import { getCurrentUser } from "@/auth";
 import { buildChecklist, ensurePlan, listPlans, resolveFocus, setItemStatus } from "@/services/student";
+import { WorkspacePage } from "@/components/journey-workspace";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Your action plan" };
@@ -24,7 +25,7 @@ export default async function ActionPlanPage({ searchParams }: { searchParams: P
   if (user && focus) { try { await ensurePlan(user.id, focusType, focusRef); } catch { saveError = true; } }
   const plans = user ? await listPlans(user.id) : [];
   const preview = !user ? await buildChecklist(focusType || "field", focusRef || "technology") : [];
-  return <div className="cb-container cb-page">
+  return <WorkspacePage active="plan">
     <header className="mb-7 flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-forest-200 bg-mint/60 p-6 sm:p-8"><div><Eyebrow>One step at a time</Eyebrow><h1 className="cb-page-title mt-3">A direction. Now a little action.</h1><p className="mt-3 text-sm text-ink-600">{focus ? focus.title : "A practical checklist to keep you moving, without rushing you."}</p></div><ListChecks aria-hidden className="hidden h-16 w-16 shrink-0 text-forest-600 sm:block" strokeWidth={1.3} /></header>
     <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px] 2xl:grid-cols-[minmax(0,1fr)_380px]">
       <div className="space-y-5">
@@ -37,6 +38,6 @@ export default async function ActionPlanPage({ searchParams }: { searchParams: P
         <div className="rounded-2xl border border-butter-ink/20 bg-butter/30 p-5"><h2 className="mb-4 text-base font-semibold">Useful along the way</h2><div className="space-y-3"><LinkRow href="/institutions" title="Find institutions" icon={<GraduationCap className="h-4 w-4" />} accent="sky" /><LinkRow href="/scholarships" title="Check scholarships" icon={<Wallet className="h-4 w-4" />} accent="butter" /><LinkRow href="/exams" title="Check entrance exams" icon={<FileText className="h-4 w-4" />} accent="lavender" /></div></div><Callout title="A checklist, not a countdown"><p>Take one task at a time. Dates and requirements come from the official notices you check.</p></Callout>
       </aside>
     </div>
-  </div>;
+  </WorkspacePage>;
 }
 function CompassIcon() { return <ClipboardList className="h-5 w-5 text-forest-700" aria-hidden />; }

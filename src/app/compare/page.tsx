@@ -3,6 +3,7 @@ import { ArrowLeftRight, Scale } from "lucide-react";
 import { ArrowGlyph, Badge, Callout, EmptyState, Eyebrow, accentSurface } from "@/components/ui";
 import { Reveal } from "@/components/reveal";
 import { getCareers, getCourses, getInstitutions, getPathways } from "@/services/catalog";
+import { WorkspacePage } from "@/components/journey-workspace";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Compare" };
@@ -108,7 +109,7 @@ export default async function ComparePage({
   const pairs = suggestedPairs[type] ?? [];
 
   return (
-    <div className="cb-container cb-page">
+    <WorkspacePage active="plan">
       <div className="flex items-center gap-2">
         <Eyebrow className="animate-rise">Compare</Eyebrow>
         <Scale aria-hidden className="h-3.5 w-3.5 text-forest-500" />
@@ -245,6 +246,6 @@ export default async function ComparePage({
           ) : null}
         </div>
       )}
-    </div>
+    </WorkspacePage>
   );
 }
