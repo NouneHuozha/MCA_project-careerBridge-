@@ -54,7 +54,7 @@ export function SiteNav({ user }: { user: NavUser }) {
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
   const closeAll = () => { setMobileOpen(false); setExploreOpen(false); };
   const progressHref = user ? "/dashboard" : "/profile";
-  const progressLabel = user ? "My progress" : "My journey";
+  const progressLabel = user ? "My plan" : "My journey";
 
   return <header className="sticky top-0 z-50 border-b border-ink-200 bg-canvas shadow-[0_2px_8px_#23453305]">
     <div className="cb-container flex h-[76px] items-center justify-between gap-5">
